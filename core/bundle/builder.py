@@ -48,6 +48,7 @@ KNOWN_CURVES: dict[str, dict[str, Any]] = {
         "a": 0,
         "b": 7,
         "p": 2**256 - 2**32 - 977,
+        "label": "secp256k1",
         "source": "SEC 2 v2",
         "published_order": int(
             "FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFEBAAEDCE6AF48A03BBFD25E8CD0364141", 16
@@ -64,6 +65,7 @@ KNOWN_CURVES: dict[str, dict[str, Any]] = {
         "p": int(
             "FFFFFFFF00000001000000000000000000000000FFFFFFFFFFFFFFFFFFFFFFFF", 16
         ),
+        "label": "P-256",
         "source": "NIST SP 800-186, also SEC 2 as secp256r1",
         "seed": "C49D360886E704936A6678E1139D26B7819F7E90",
         "published_order": int(
@@ -304,7 +306,10 @@ def main(argv: list[str] | None = None) -> int:
             print(f"unknown curve: {args.curve}", file=sys.stderr)
             return 2
         params = KNOWN_CURVES[args.curve]
-        name, a, b, p = args.curve, params["a"], params["b"], params["p"]
+        a, b, p = params["a"], params["b"], params["p"]
+        # The file is named by the command-line key; the label inside is the
+        # name the standard uses, and those differ in case.
+        name = params.get("label", args.curve)
         source = params.get("source")
         published = params.get("published_order")
         seed = params.get("seed")
@@ -328,7 +333,8 @@ def main(argv: list[str] | None = None) -> int:
         print(f"FAIL  {type(exc).__name__}: {exc}", file=sys.stderr)
         return 1
 
-    path = write_bundle(bundle, Path(args.out), name or "curve")
+    stem = args.curve if args.curve else (args.name or "curve")
+    path = write_bundle(bundle, Path(args.out), stem)
     _report(bundle, path)
     return 0
 
