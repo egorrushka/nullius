@@ -173,14 +173,12 @@ export default function App() {
   return (
     <div className="page">
       <aside className="index">
-        <h1>
-          Curve
-          <br />
-          certificates
-        </h1>
+        <h1>Nullius</h1>
+        <p className="motto">nullius in verba</p>
         <p className="blurb">
-          Every claim below arrives with the evidence for it, and a separate
-          program re-checks that evidence without redoing the work.
+          Take nobody's word for it. Every claim below arrives with the
+          evidence for it, and a separate program re-checks that evidence
+          without redoing the work.
         </p>
         <ul>
           {index.bundles.map((b) => (
