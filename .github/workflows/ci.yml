@@ -1,0 +1,94 @@
+name: build and verify
+
+# Three things have to hold on every commit, and they are checked in this
+# order because each is cheaper than the next to diagnose.
+#
+#   1. The verifier builds and the suite passes.
+#   2. Every certificate we ship still verifies, from the file alone.
+#   3. Rebuilding a certificate from scratch reproduces it byte for byte,
+#      on a machine that is not the one it was made on.
+#
+# The third is the one worth having. A certificate that changes when a
+# different machine builds it cannot be addressed by its hash, and the
+# whole format rests on that.
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install PARI/GP
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y pari-gp pari-seadata
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
+
+      - name: Install Python dependencies
+        run: pip install pytest pyyaml
+
+      - uses: dtolnay/rust-toolchain@stable
+
+      - name: Build the verifier
+        working-directory: verifier
+        run: cargo build --release
+
+      - name: Run the suite
+        run: python -m pytest tests -q
+
+      - name: Verify every published certificate
+        run: |
+          for cert in spec/vectors/valid/*.ccert; do
+            echo "=== $cert"
+            ./verifier/target/release/ccert-verify --require-proved "$cert"
+          done
+
+      - name: Rebuild the corpus and compare byte for byte
+        run: |
+          mkdir -p /tmp/rebuilt
+          for cert in spec/vectors/valid/*.ccert; do
+            name=$(basename "$cert" .ccert)
+            python -m core.bundle.builder --curve "$name" --out /tmp/rebuilt --quiet
+            if ! cmp -s "$cert" "/tmp/rebuilt/$name.ccert"; then
+              echo "::error::$name does not reproduce; the format is no longer"
+              echo "::error::deterministic, or PARI changed what it searches for"
+              diff <(head -c 400 "$cert") <(head -c 400 "/tmp/rebuilt/$name.ccert") || true
+              exit 1
+            fi
+            echo "$name reproduces exactly"
+          done
+
+  frontend:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
+      - run: pip install pyyaml
+      - name: Publish the corpus for the page
+        run: python tools/export_web.py --corpus spec/vectors/valid
+      - name: Build the single-file page
+        working-directory: web
+        run: |
+          npm ci
+          npm run build
+      - name: The page must stand alone
+        run: |
+          if grep -qE 'src="(http|\./assets|/assets)' web/dist/index.html; then
+            echo "::error::the built page loads something from outside itself"
+            exit 1
+          fi
+          echo "page is self-contained, $(stat -c%s web/dist/index.html) bytes"
