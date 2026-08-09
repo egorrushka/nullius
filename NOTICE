@@ -1,0 +1,18 @@
+This project is licensed under the Apache License, Version 2.0.
+
+Third-party components
+----------------------
+
+The evidence producer runs PARI/GP as a separate process. It does not link
+against it: the two communicate through generated script files and standard
+output. PARI/GP is distributed under the GNU General Public License and is
+not included in this repository.
+
+The full toolkit distribution, if you build one, does include PARI/GP
+binaries. Distributing that archive carries the obligations of the GPL for
+those binaries: keep the licence text alongside them and be able to supply
+the corresponding source.
+
+The verifier depends on num-bigint, num-integer, num-traits, sha1 and sha2,
+each under the Apache-2.0 or MIT licence. The viewer is built with React
+and Vite, under the MIT licence.
