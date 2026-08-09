@@ -1,6 +1,23 @@
+<div align="center">
+
 # Nullius
 
-*Nullius in verba* — take nobody's word for it.
+**Machine-checkable certificates for elliptic curves**
+
+*Nullius in verba* — take nobody's word for it
+
+[![build and verify](https://github.com/egorrushka/nullius/actions/workflows/ci.yml/badge.svg)](https://github.com/egorrushka/nullius/actions/workflows/ci.yml)
+[![licence: Apache 2.0](https://img.shields.io/badge/licence-Apache%202.0-blue.svg)](LICENSE)
+[![curves certified](https://img.shields.io/badge/curves-secp256k1%20%7C%20P--256-6f9)](spec/vectors/valid)
+[![verifier](https://img.shields.io/badge/verifier-1630%20lines%20of%20Rust-c96)](verifier/src)
+
+🇺🇦 &nbsp;**Made in Ukraine**
+
+<img src="docs/dossier.png" alt="A dossier for secp256k1: seven claims, six of them proved, judged by two policies that disagree" width="820">
+
+</div>
+
+---
 
 Claims about elliptic curves normally arrive as tables. This curve has
 prime order, that one has a large discriminant, this one's parameters came
@@ -51,9 +68,9 @@ undecided criterion prevents a pass — silence is not approval.
 
 | Tier | Meaning |
 |------|---------|
-| proved | The evidence establishes the claim outright |
-| derived | Follows from other claims here, and only if those hold |
-| not proved | A program reported it. That is all it means |
+| **proved** | The evidence establishes the claim outright |
+| **derived** | Follows from other claims here, and only if those hold |
+| **not proved** | A program reported it. That is all it means |
 
 The tier of a claim follows from the kind of evidence attached, through a
 table the verifier holds too. And nothing may rest on something weaker
@@ -71,7 +88,7 @@ than bounded by search; the CM field discriminant, with the factorisation
 that shows it is fundamental; and, where the standard publishes a seed,
 that the curve parameters follow from it.
 
-Curves in the corpus: secp256k1, NIST P-256.
+Curves in the corpus: **secp256k1**, **NIST P-256**.
 
 ## Getting started
 
@@ -139,5 +156,27 @@ itself came from is a separate question, and a seed can be searched for.
 ## Licence
 
 Apache-2.0. PARI/GP is invoked as a separate process, not linked, so its
-GPL does not reach this code; see `NOTICE` for what changes if you
-distribute PARI binaries alongside a build.
+GPL does not reach this code; see [`NOTICE`](NOTICE) for what changes if
+you distribute PARI binaries alongside a build.
+
+---
+
+<div align="center">
+
+## 🇺🇦 Made in Ukraine
+
+This project was written in Ukraine, under difficult wartime conditions —
+power outages, air-raid alerts, and everything that comes with it.
+It is shared freely with the community regardless.
+
+If you'd like to support the project, a tip is warmly appreciated:
+
+```
+BTC: bc1qa6n9z79jjtsgjjg29z7q4h6npx22huz0qymz2d
+```
+
+Every bit of support helps keep the work going. Thank you. 🙏
+
+**Slava Ukraini** 🇺🇦
+
+</div>
