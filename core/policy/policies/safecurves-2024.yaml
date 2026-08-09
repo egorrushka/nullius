@@ -1,0 +1,70 @@
+name: safecurves-2024
+title: SafeCurves criteria
+source: >-
+  Bernstein and Lange, "Safe curves for elliptic-curve cryptography",
+  ePrint 2024/1265, published 2025 in LNCS 15600.
+
+# Only proved facts count here. A number a program merely reported is
+# treated as if the bundle had said nothing.
+accept_tiers: [A, D]
+
+criteria:
+  - id: prime-order
+    description: >-
+      The group must have prime order, so that no small subgroup exists for
+      an attacker to confine a point into.
+    claim: curve.order
+    field: cofactor
+    op: eq
+    value: "1"
+    citation: SafeCurves, "Prime fields and prime orders"
+
+  - id: transfers
+    description: >-
+      The embedding degree must be large, or a pairing carries the discrete
+      logarithm into a finite field where index calculus applies.
+    claim: curve.embedding
+    field: degree
+    op: ge
+    value_from:
+      claim: curve.order
+      field: n
+      minus: 1
+      over: 100
+    citation: SafeCurves, "Transfers"
+
+  - id: complex-multiplication
+    description: >-
+      The CM field discriminant must be large. A small one gives the curve
+      an efficiently computable endomorphism and marks it as special rather
+      than typical.
+    claim: curve.cm
+    field: fundamental
+    transform: abs
+    op: gt
+    value: "2^100"
+    citation: SafeCurves, "Complex-multiplication field discriminants"
+
+  # The criteria below are stated so that their absence is visible. The
+  # project cannot yet produce the evidence they ask for, and an undecided
+  # criterion is an honest gap, not a quiet pass.
+  - id: twist-security
+    description: >-
+      The quadratic twist must also have a large prime factor, or an
+      implementation that skips point validation can be attacked through it.
+    claim: twist.security
+    field: largest_prime_factor
+    transform: bits
+    op: ge
+    value: "200"
+    citation: SafeCurves, "Twist security"
+
+  - id: rigidity
+    description: >-
+      The parameters must be reproducible from a documented derivation, so
+      that nobody could have searched for a curve with a hidden weakness.
+    claim: param.rigidity
+    field: reproduced
+    op: eq
+    value: "1"
+    citation: SafeCurves, "Rigidity"

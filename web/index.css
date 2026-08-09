@@ -1,0 +1,328 @@
+/* A ledger read by lamplight.
+   Same idea as before — attestation, numbers written down for someone else
+   to check — but on a dark slate ground. Three inks do the work: prose in
+   soft grey, headings in steel, and the numbers themselves in warm
+   parchment, so data separates from commentary without any boxes or rules.
+   Colour is reserved for what the project is strict about: what rests on
+   proof, and what a policy makes of it. */
+
+:root {
+  --ground: #12161c;
+  --panel: #171d25;
+  --text: #c6cbd4;
+  --muted: #7d8794;
+  --rule: #262e39;
+
+  --heading: #8fa7bd;
+  --bright: #e4e8ee;
+  --figure: #d8c8a4;
+
+  --proved: #74b394;
+  --derived: #8f9ee2;
+  --unproved: #cba463;
+  --fail: #d4837c;
+
+  --display: "Palatino Linotype", Palatino, "Book Antiqua", "URW Palladio L", serif;
+  --body: "Segoe UI", system-ui, -apple-system, sans-serif;
+  --data: "Cascadia Mono", Consolas, "DejaVu Sans Mono", monospace;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--ground);
+  color: var(--text);
+  font-family: var(--body);
+  font-size: 15px;
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+}
+
+.mono { font-family: var(--data); font-variant-numeric: tabular-nums; }
+
+.empty {
+  max-width: 30rem;
+  margin: 22vh auto;
+  padding: 0 1.5rem;
+  color: var(--muted);
+  font-family: var(--data);
+  font-size: 14px;
+}
+
+.page {
+  display: grid;
+  grid-template-columns: 15rem minmax(0, 1fr);
+  gap: 3rem;
+  max-width: 62rem;
+  margin: 0 auto;
+  padding: 3rem 1.75rem 6rem;
+}
+
+/* index ------------------------------------------------------------ */
+
+.index h1 {
+  font-family: var(--display);
+  font-weight: 400;
+  font-size: 1.85rem;
+  line-height: 1.1;
+  letter-spacing: -0.01em;
+  margin: 0 0 0.75rem;
+  color: var(--bright);
+}
+
+.blurb {
+  color: var(--muted);
+  font-size: 13px;
+  margin: 0 0 1.75rem;
+  padding-bottom: 1.75rem;
+  border-bottom: 1px solid var(--rule);
+}
+
+.index ul { list-style: none; margin: 0; padding: 0; }
+
+.index button {
+  display: block;
+  width: 100%;
+  text-align: left;
+  background: none;
+  border: none;
+  border-left: 2px solid transparent;
+  padding: 0.5rem 0 0.5rem 0.75rem;
+  cursor: pointer;
+  color: var(--muted);
+  font: inherit;
+}
+
+.index button:hover { color: var(--text); }
+
+.index button.current {
+  border-left-color: var(--heading);
+  color: var(--bright);
+  background: linear-gradient(90deg, rgba(143, 167, 189, 0.08), transparent 70%);
+}
+
+.curve-name { display: block; font-family: var(--data); font-size: 14px; }
+.curve-meta { display: block; font-size: 12px; color: var(--muted); }
+
+/* dossier ---------------------------------------------------------- */
+
+.dossier > header { border-bottom: 1px solid var(--rule); padding-bottom: 1.5rem; }
+
+.dossier h2 {
+  font-family: var(--display);
+  font-weight: 400;
+  font-size: 2.4rem;
+  margin: 0;
+  letter-spacing: -0.015em;
+  color: var(--bright);
+}
+
+.source { color: var(--muted); font-size: 13px; margin: 0.15rem 0 1.1rem; }
+
+.digest {
+  font-size: 13px;
+  letter-spacing: 0.04em;
+  word-spacing: 0.35em;
+  color: var(--figure);
+  margin: 0;
+}
+
+.digest-label,
+.order-label {
+  font-size: 12px;
+  color: var(--muted);
+  margin: 0.4rem 0 0;
+  max-width: 34rem;
+}
+
+h3 {
+  font-family: var(--body);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--heading);
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 1rem;
+  margin: 2.5rem 0 0.75rem;
+}
+
+.count {
+  font-weight: 400;
+  letter-spacing: 0.02em;
+  text-transform: none;
+  color: var(--muted);
+}
+
+/* claims ----------------------------------------------------------- */
+
+.claims { list-style: none; margin: 0; padding: 0; }
+
+.claim { border-top: 1px solid var(--rule); }
+.claim:last-child { border-bottom: 1px solid var(--rule); }
+
+.claim-head {
+  display: grid;
+  grid-template-columns: 1.5rem minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 0.75rem;
+  width: 100%;
+  background: none;
+  border: none;
+  padding: 0.7rem 0;
+  font: inherit;
+  color: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.claim-head:hover .claim-headline { color: var(--bright); }
+
+/* The gutter carries the one thing the project is strict about: what
+   rests on proof and what does not. */
+.gutter { display: flex; justify-content: center; }
+
+.mark { width: 9px; height: 9px; border: 1.5px solid var(--muted); }
+.tier-A .mark { background: var(--proved); border-color: var(--proved); }
+.tier-D .mark { border-color: var(--derived); transform: rotate(45deg); }
+.tier-X .mark { border-color: var(--unproved); border-radius: 50%; }
+
+.claim-headline { display: block; color: var(--text); }
+.claim-note { display: block; font-size: 12px; color: var(--muted); }
+
+.claim-tier {
+  font-size: 11px;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.tier-A .claim-tier { color: var(--proved); }
+.tier-D .claim-tier { color: var(--derived); }
+.tier-X .claim-tier { color: var(--unproved); }
+
+.claim-body {
+  padding: 0.25rem 0 1.1rem 2.25rem;
+  border-left: 1px solid var(--rule);
+  margin-left: 0.7rem;
+}
+
+.claim-id { font-family: var(--data); font-size: 12px; color: var(--heading); }
+
+.number { display: flex; gap: 0.75rem; margin-top: 0.4rem; }
+
+.number-label {
+  font-size: 12px;
+  color: var(--muted);
+  min-width: 5.5rem;
+  padding-top: 0.1rem;
+}
+
+.number-value { font-family: var(--data); font-size: 13px; color: var(--figure); }
+.number-value.long { word-spacing: 0.3em; word-break: break-word; max-width: 34rem; }
+
+.depends, .evidence { font-size: 12px; color: var(--muted); margin: 0.7rem 0 0; }
+.evidence .mono { color: var(--text); }
+
+.order {
+  font-size: 15px;
+  word-spacing: 0.4em;
+  line-height: 1.7;
+  margin: 1.75rem 0 0;
+  max-width: 36rem;
+  color: var(--figure);
+}
+
+/* verdict ---------------------------------------------------------- */
+
+.verdict {
+  margin-top: 3rem;
+  background: var(--panel);
+  border: 1px solid var(--rule);
+  padding: 1.5rem 1.75rem 1.75rem;
+}
+
+.verdict-head { display: flex; align-items: baseline; gap: 1rem; }
+
+.verdict-head h3, .verdict h2 {
+  font-family: var(--body);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--heading);
+  margin: 0;
+}
+
+select {
+  font: inherit;
+  font-size: 14px;
+  background: var(--ground);
+  border: none;
+  border-bottom: 1px solid var(--heading);
+  color: var(--bright);
+  padding: 0.15rem 0.25rem;
+  cursor: pointer;
+}
+
+option { background: var(--ground); color: var(--text); }
+
+.criteria { list-style: none; margin: 1.25rem 0 0; padding: 0; }
+
+.criterion {
+  display: grid;
+  grid-template-columns: 11rem minmax(0, 1fr);
+  gap: 0.75rem 1rem;
+  padding: 0.55rem 0 0.55rem 0.9rem;
+  border-left: 2px solid var(--rule);
+  border-top: 1px solid var(--rule);
+  font-size: 14px;
+}
+
+.criterion:first-child { border-top: none; }
+.criterion.pass { border-left-color: var(--proved); }
+.criterion.fail { border-left-color: var(--fail); }
+.criterion.undecided { border-left-color: var(--unproved); border-left-style: dashed; }
+
+.criterion-id { font-family: var(--data); font-size: 13px; color: var(--text); }
+.criterion.pass .criterion-id { color: var(--proved); }
+.criterion.fail .criterion-id { color: var(--fail); }
+.criterion.undecided .criterion-id { color: var(--unproved); }
+
+.criterion-detail { font-family: var(--data); font-size: 13px; color: var(--muted); }
+.criterion-why { grid-column: 2; margin: 0; font-size: 12px; color: var(--muted); }
+
+.result {
+  margin: 1.5rem 0 0;
+  font-family: var(--display);
+  font-size: 1.25rem;
+  color: var(--text);
+}
+
+.result strong { color: var(--bright); font-weight: 400; }
+
+.caveat {
+  font-size: 12px;
+  color: var(--muted);
+  margin: 0.5rem 0 0;
+  max-width: 34rem;
+}
+
+button:focus-visible, select:focus-visible {
+  outline: 2px solid var(--heading);
+  outline-offset: 2px;
+}
+
+@media (max-width: 46rem) {
+  .page { grid-template-columns: 1fr; gap: 2rem; padding: 2rem 1.1rem 4rem; }
+  .criterion { grid-template-columns: 1fr; }
+  .criterion-why { grid-column: 1; }
+  .dossier h2 { font-size: 1.9rem; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * { transition: none !important; animation: none !important; }
+}
