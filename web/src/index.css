@@ -71,6 +71,14 @@ body {
   color: var(--bright);
 }
 
+.motto {
+  font-family: var(--display);
+  font-style: italic;
+  font-size: 13px;
+  color: var(--heading);
+  margin: -0.35rem 0 0.9rem;
+}
+
 .blurb {
   color: var(--muted);
   font-size: 13px;
