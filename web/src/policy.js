@@ -108,11 +108,11 @@ function threshold(bundle, policy, criterion) {
   let label = `${reference.claim}.${reference.field}`;
   if (reference.minus !== undefined) {
     value -= BigInt(reference.minus);
-    label += ` − ${reference.minus}`;
+    label = `(${label} − ${reference.minus})`;
   }
   if (reference.over !== undefined) {
     value /= BigInt(reference.over);
-    label += ` ÷ ${reference.over}`;
+    label = `${label} ÷ ${reference.over}`;
   }
   return { value, label };
 }
