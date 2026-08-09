@@ -1,0 +1,25 @@
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+*.egg-info/
+.pytest_cache/
+
+verifier/target/
+web/node_modules/
+web/dist/
+
+corpus/*.ccert
+!corpus/.gitkeep
+*.log
+tmp/
+
+# Installed beside the project so a frozen system drive cannot lose it
+vendor/
+
+# Assembled releases
+release/
+
+# Published copy of the corpus; regenerate with tools\web_data.bat
+web/public/data/
+web/src/corpus.generated.js
