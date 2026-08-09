@@ -294,13 +294,13 @@ def _threshold(bundle: Bundle, policy: Policy, criterion: Criterion) -> tuple[in
     label = f"{reference['claim']}.{reference['field']}"
     if "minus" in reference:
         value -= int(reference["minus"])
-        label += f" - {reference['minus']}"
+        label = f"({label} - {reference['minus']})"
     if "over" in reference:
         divisor = int(reference["over"])
         if divisor == 0:
             raise PolicyError("division by zero in a policy threshold")
         value //= divisor
-        label += f" / {divisor}"
+        label = f"{label} / {divisor}"
     return value, label
 
 
