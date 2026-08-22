@@ -1,0 +1,37 @@
+# Line endings are pinned, because in this project they are not cosmetic.
+#
+# A .ccert is content-addressed: its sha256 is its identity, and the
+# verifier hashes the raw bytes. A CRLF conversion changes those bytes and
+# therefore the digest, so a repository cloned on a machine with autocrlf
+# on would present certificates whose digests no longer match the files
+# beside them — a failure that looks like tampering and is only a newline.
+# The same reasoning covers the negative vectors, whose .expect files are
+# matched as substrings, and the wasm base64 the page is checked against.
+#
+# So: every text file in this tree is LF, on every platform, regardless of
+# a contributor's git config. `text=auto eol=lf` normalises on commit and
+# checks out LF; the explicit `-text` on the artefacts and certificates
+# forbids any conversion at all, which is the stronger guarantee where a
+# byte matters.
+
+* text=auto eol=lf
+
+# Certificates and their expectations: byte-exact, never converted.
+*.ccert   -text
+*.expect  -text
+*.why     -text
+
+# Source that the verifier or producer hashes or emits verbatim.
+*.rs      text eol=lf
+*.py      text eol=lf
+*.yaml    text eol=lf
+*.md      text eol=lf
+*.json    text eol=lf
+
+# Batch files are the one place CRLF is correct: some Windows shells
+# mishandle LF-only .bat. These are not hashed by anything.
+*.bat     text eol=crlf
+
+# Never let anything touch a compiled artefact.
+*.wasm    binary
+*.zip     binary
