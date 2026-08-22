@@ -1,0 +1,4 @@
+A = 2, which makes x^3 + A x^2 + x have a repeated root.
+
+    Degenerate rather than merely unusual: there is no curve, so the
+    refusal names the condition rather than reporting a mismatch.

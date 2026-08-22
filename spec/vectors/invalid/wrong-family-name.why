@@ -1,0 +1,6 @@
+A BN curve claiming to be BLS12.
+
+    Caught by the divisibility condition rather than by comparing the
+    generated numbers: a BN parameter does not generate a BLS12 curve at
+    all, and the exactness check on the division by three is where that
+    becomes visible.

@@ -1,0 +1,5 @@
+A largest prime factor asserted where nothing was factored.
+
+    The cofactor factorisation is optional — BLS24-315's is a 983-bit
+    composite and will not be produced — but an assertion about it
+    without one reads as established and is not.

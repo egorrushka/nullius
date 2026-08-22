@@ -1,0 +1,6 @@
+A tower field missing its second parameter.
+
+    `F_p^4` is `F_p^2[v]/(v^2 - xi)`, and without xi a reader cannot
+    rebuild the field. Every coefficient in the payload then means
+    something else, and the arithmetic would agree with itself while
+    agreeing with nothing.

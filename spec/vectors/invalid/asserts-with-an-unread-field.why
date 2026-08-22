@@ -1,0 +1,7 @@
+A claim wearing a false attribute inside its own `asserts`.
+
+    `asserts` is the object a policy reads and a person diffs, and it was
+    the one level the closed key sets did not cover. A field like
+    `"security_level": "192-bit"` there is read by nobody and believed by
+    the reader it is aimed at. A reviewer found the gap; this vector keeps
+    it shut, on the verifier side where truth lives.

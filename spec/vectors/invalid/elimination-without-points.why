@@ -1,0 +1,5 @@
+An elimination argument with nothing to eliminate with.
+
+    A group order annihilates every point, so the candidates are narrowed
+    by points and by nothing else. An empty list narrows nothing, and six
+    survivors is a refusal rather than a choice.

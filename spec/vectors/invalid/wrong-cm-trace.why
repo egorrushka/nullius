@@ -1,0 +1,6 @@
+A CM trace computed from the subgroup order rather than the
+    cardinality.
+
+    On a curve with cofactor one the two coincide, which is why several
+    handlers read `curve.order` and were right to. Here the cofactor is
+    126 bits wide and the trace is a trace for no curve at all.

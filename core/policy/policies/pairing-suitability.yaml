@@ -1,0 +1,121 @@
+name: pairing-suitability
+title: Fitness for pairing-based cryptography
+source: >-
+  Structural requirements common to pairing-based protocols, as stated in
+  draft-irtf-cfrg-pairing-friendly-curves and in Barreto-Naehrig and
+  Barreto-Lynn-Scott.
+
+# Every criterion below is settled by exact arithmetic in the bundle.
+# Nothing here depends on a model of anyone's attack, which is why this
+# policy carries no `model` block anywhere and why its verdicts do not
+# date.
+accept_tiers: [A]
+
+criteria:
+  - id: pairing-exists
+    description: >-
+      The embedding degree must be small, or no pairing can be computed at
+      a practical cost. This is the criterion SafeCurves states in reverse:
+      there a low embedding degree is the attack, here it is the function.
+      The same certificate satisfies one policy and fails the other, and
+      both are right about the curve they were written for.
+    claim: curve.embedding
+    field: degree
+    op: le
+    value: "24"
+    citation: >-
+      draft-irtf-cfrg-pairing-friendly-curves, on the definition of a
+      pairing-friendly curve.
+
+  - id: embedding-degree-composite
+    description: >-
+      The embedding degree must be divisible by six for a sextic twist to
+      exist, which is what makes the second group representable over a
+      quadratic extension rather than over the full embedding field. The
+      test below is weaker than that statement: it checks only that the
+      degree is at least six, because the bundle asserts the degree as a
+      number and the engine compares numbers.
+    claim: curve.embedding
+    field: degree
+    op: ge
+    value: "6"
+    citation: >-
+      Barreto and Naehrig, "Pairing-friendly elliptic curves of prime
+      order", SAC 2005.
+
+  - id: subgroup-order-large
+    description: >-
+      The prime subgroup shared by both groups must be large enough that
+      generic discrete logarithm attacks, whose cost is the square root of
+      the subgroup order, stay out of reach.
+    claim: curve.order
+    field: n
+    transform: bits
+    op: ge
+    value: "224"
+    citation: >-
+      Pollard rho, at the square root of the group order.
+
+  - id: g2-subgroup-security
+    description: >-
+      The cofactor of the second group must not consist only of small
+      primes. An implementation that skips subgroup membership checks can
+      be attacked by confining a point into a small factor of the
+      cofactor, and how small the largest factor is decides how much that
+      buys an attacker.
+      The figure is an engineering floor, not a published bound. The cited
+      work establishes why the largest prime factor of the cofactor is the
+      quantity that matters; it does not name 100. Recorded as this
+      project's own, under the rule that a number says where it came from
+      or it does not appear.
+    claim: g2.order
+    field: largest_prime_factor
+    transform: bits
+    op: ge
+    value: "100"
+    citation: >-
+      Barreto, Costello, Misoczki, Naehrig, Pereira, Zanon, "Subgroup
+      security in pairing-based cryptography", LATINCRYPT 2015.
+
+  - id: g1-cofactor-known
+    description: >-
+      The first group must state its cofactor and have it factored. A
+      cofactor nobody has factored is not evidence of anything, and the
+      criterion is here so that its absence shows up rather than passing
+      unnoticed.
+    claim: curve.order
+    field: cofactor
+    op: ge
+    value: "1"
+    citation: >-
+      Implied by any protocol that clears the cofactor before use.
+
+  - id: twist-relation-established
+    description: >-
+      The bundle must tie the second group's order to the subject, not
+      merely state one. A certificate can prove an order for some curve
+      over a quadratic extension and name the claim after G2 without
+      anything connecting the two, and a reader who did not look closely
+      would take the connection for granted. This criterion makes the
+      absence visible: with no `g2.twist` claim the verdict is undecided,
+      not a pass, because silence is not consent.
+
+      What the claim establishes is which of the six classes the proved
+      order belongs to. That the curve in the G2 evidence *is* that twist
+      is established separately, by `derive.order-elimination`: it checks
+      a' = 0 on that curve and a = 0 on the subject, which over a field
+      with q = 1 mod 3 makes it one of the six, and then takes the census
+      on r that says which one.
+
+      This paragraph used to say the opposite — that two curves can share
+      an order and the format goes no further. It went further. The
+      wording is corrected rather than dropped, because a reader who
+      learned the old limit should be able to see that it moved.
+    claim: g2.twist
+    field: class
+    op: le
+    value: "5"
+    citation: >-
+      Hess, Smart and Vercauteren, "The eta pairing revisited", IEEE
+      Transactions on Information Theory 52 (2006), on the orders of the
+      sextic twists of a curve with j = 0.

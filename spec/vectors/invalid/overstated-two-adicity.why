@@ -1,0 +1,6 @@
+A two-adicity larger than the exponent of two in r - 1.
+
+    A SNARK policy reads this number to decide how large a proving domain
+    the curve admits, so an unchecked assertion about it would let a curve
+    look more capable than it is. The verifier recomputes it from the
+    factorisation it has already proved complete.

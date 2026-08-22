@@ -1,0 +1,15 @@
+A witness whose exact order leaves several candidates in the window.
+
+    Everything here is true: the point is on the curve, its order is
+    exactly what the payload says, and the factorisation is complete and
+    proved. The witness is simply too small to single out one multiple,
+    and a verifier that picked the nearest admissible one would produce
+    output indistinguishable from a proof.
+
+    Note that this cannot be faked by shrinking the stated order and
+    leaving the point alone — that is a different defect, caught earlier
+    by the check that the order annihilates the witness. The point has to
+    be moved into a small subgroup.
+
+    Built over the base field: the G2 order is settled by elimination
+    now, which has no witness to undersize.

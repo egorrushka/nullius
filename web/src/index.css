@@ -1,0 +1,782 @@
+/* A ledger read by lamplight, laid out as an instrument.
+   The palette is unchanged: three inks on dark slate — prose in soft grey,
+   headings in steel, numbers in warm parchment — with colour reserved for
+   what the project is strict about, namely what rests on proof and what a
+   policy makes of it.
+   What changed is the shape. This was a document you read top to bottom;
+   it is now three panes that hold still while you work. The window never
+   scrolls: each pane scrolls itself, so selecting a curve or opening a
+   claim never moves anything you were looking at. */
+
+:root {
+  --ground: #12161c;
+  --panel: #171d25;
+  --sunk: #10141a;
+  --text: #c6cbd4;
+  --muted: #7d8794;
+  --rule: #262e39;
+  --rule-soft: #1e242d;
+
+  --heading: #8fa7bd;
+  --bright: #e4e8ee;
+  --figure: #d8c8a4;
+
+  /* Three signals that have to be told apart at a glance, on a dark
+     ground, at six pixels across. The previous set was chosen to sit
+     quietly with the prose and did that too well: side by side the
+     three read as one muted colour, and a legend explaining which was
+     which did not help, because the eye never registered a difference to
+     look up.
+     Green, blue and red, at full strength. Nothing else on the page is
+     saturated, so these carry meaning by being the only things that are.
+     The words are still beside every mark — colour alone is never the
+     whole signal here, which matters for the eight percent of readers
+     who would not separate the green from the red. */
+  --proved: #3fb950;
+  --derived: #58a6ff;
+  --unproved: #f85149;
+  --fail: #f85149;
+  --undecided: #d29922;
+
+  --display: "Palatino Linotype", Palatino, "Book Antiqua", "URW Palladio L", serif;
+  --body: "Segoe UI", system-ui, -apple-system, sans-serif;
+  --data: "Cascadia Mono", Consolas, "DejaVu Sans Mono", monospace;
+
+  --rail: 14.5rem;
+  --verdict: 27rem;
+}
+
+* { box-sizing: border-box; }
+
+html, body, #root { height: 100%; }
+
+body {
+  margin: 0;
+  background: var(--ground);
+  color: var(--text);
+  font-family: var(--body);
+  font-size: 14px;
+  line-height: 1.45;
+  -webkit-font-smoothing: antialiased;
+  overflow: hidden;                 /* the window itself never scrolls */
+}
+
+.mono { font-family: var(--data); font-variant-numeric: tabular-nums; }
+
+button, select { font: inherit; color: inherit; }
+
+:focus-visible {
+  outline: 2px solid var(--heading);
+  outline-offset: -2px;
+}
+
+.empty {
+  max-width: 30rem;
+  margin: 22vh auto;
+  padding: 0 1.5rem;
+  color: var(--muted);
+  font-family: var(--data);
+  font-size: 13px;
+}
+
+/* the shell -------------------------------------------------------- */
+
+.shell {
+  display: grid;
+  grid-template-columns: var(--rail) minmax(0, 1fr) var(--verdict);
+  height: 100dvh;
+  overflow: hidden;
+}
+
+/* Rails and the centre share a skeleton: a fixed head, a scrolling
+   middle, an optional fixed foot. Anything that must stay put lives in
+   the head or the foot, which is why neither the policy selector nor the
+   verdict ever scrolls out of reach. */
+.rail, .dossier {
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.rail { background: var(--panel); }
+.index { border-right: 1px solid var(--rule); }
+.verdict { border-left: 1px solid var(--rule); }
+
+.rail-scroll, .dossier-scroll {
+  overflow-y: auto;
+  min-height: 0;
+  scrollbar-width: thin;
+  scrollbar-color: var(--rule) transparent;
+}
+
+.rail-scroll::-webkit-scrollbar,
+.dossier-scroll::-webkit-scrollbar { width: 9px; }
+.rail-scroll::-webkit-scrollbar-thumb,
+.dossier-scroll::-webkit-scrollbar-thumb {
+  background: var(--rule);
+  border-radius: 5px;
+  border: 2px solid transparent;
+  background-clip: content-box;
+}
+
+.rail-head {
+  padding: 0.9rem 1rem 0.7rem;
+  border-bottom: 1px solid var(--rule);
+}
+
+.rail-foot {
+  padding: 0.75rem 1rem 0.9rem;
+  border-top: 1px solid var(--rule);
+}
+
+/* left rail: the corpus -------------------------------------------- */
+
+.brand h1 {
+  font-family: var(--display);
+  font-weight: 400;
+  font-size: 1.4rem;
+  line-height: 1;
+  margin: 0;
+  color: var(--bright);
+  letter-spacing: -0.01em;
+}
+
+.motto {
+  font-family: var(--display);
+  font-style: italic;
+  font-size: 12px;
+  color: var(--heading);
+  margin: 0.25rem 0 0;
+}
+
+.blurb { color: var(--muted); font-size: 11.5px; line-height: 1.4; margin: 0; }
+
+.curves { list-style: none; margin: 0; padding: 0.4rem 0; }
+
+.curves button {
+  display: block;
+  width: 100%;
+  text-align: left;
+  background: none;
+  border: none;
+  border-left: 2px solid transparent;
+  padding: 0.34rem 0.9rem 0.34rem 0.8rem;
+  cursor: pointer;
+  color: var(--muted);
+}
+
+.curves button:hover { color: var(--text); background: rgba(255, 255, 255, 0.02); }
+
+.curves button.current {
+  border-left-color: var(--heading);
+  color: var(--bright);
+  background: linear-gradient(90deg, rgba(143, 167, 189, 0.09), transparent 75%);
+}
+
+.curve-name { display: block; font-family: var(--data); font-size: 13px; }
+.curve-meta { display: block; font-size: 11px; color: var(--muted); }
+
+/* centre: the certificate ------------------------------------------ */
+
+.subject {
+  padding: 0.85rem 1.4rem 0.8rem;
+  border-bottom: 1px solid var(--rule);
+}
+
+.subject-line {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.dossier h2 {
+  font-family: var(--display);
+  font-weight: 400;
+  font-size: 1.55rem;
+  margin: 0;
+  letter-spacing: -0.012em;
+  color: var(--bright);
+}
+
+.tiers { display: flex; gap: 0.4rem; flex-shrink: 0; }
+
+/* The counts and the legend are the same object.
+   A strip of prose explaining three colours sat below the header and was
+   skipped: it asked the reader to hold a mapping in mind and then apply
+   it later. Putting the colour inside the count means there is nothing to
+   remember — the swatch and its meaning are already together, at the top,
+   where the eye lands first. */
+.tier-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-family: var(--data);
+  font-size: 11.5px;
+  letter-spacing: 0.01em;
+  padding: 0.26rem 0.6rem;
+  border-radius: 3px;
+  border: 1px solid color-mix(in srgb, currentColor 55%, transparent);
+  background: color-mix(in srgb, currentColor 14%, transparent);
+}
+
+.tier-chip .mark { width: 8px; height: 8px; flex: none; }
+
+.tier-chip.proved { color: var(--proved); }
+.tier-chip.derived { color: var(--derived); }
+.tier-chip.unproved { color: var(--unproved); }
+
+/* Nothing checked these.
+ *
+ * When the verifier refused the document, or never loaded, the marks
+ * beside each claim are the document's account of itself and not a
+ * verdict. They stay visible — hiding them would lose what the
+ * certificate says — and go grey, so that a reader skimming the page
+ * does not take a wall of green as agreement. The one line that is a
+ * verdict keeps its colour, and it is the banner above. */
+.tiers.stated .tier-chip,
+.tiers.stated .tier-chip .mark { color: var(--muted); }
+.tiers.stated .tier-chip .mark { background: var(--muted); }
+.claim.stated .mark { background: var(--muted); }
+.claim.stated .claim-tier { color: var(--muted); font-style: italic; }
+
+.source { color: var(--muted); font-size: 12px; margin: 0.2rem 0 0.3rem; }
+
+.digest {
+  font-size: 11px;
+  color: var(--figure);
+  opacity: 0.65;
+  margin: 0;
+  word-break: break-all;
+}
+
+.dossier-scroll { padding: 0.35rem 1.4rem 1.5rem; }
+
+/* claims ----------------------------------------------------------- */
+
+.claims { list-style: none; margin: 0; padding: 0; }
+
+.claim { border-bottom: 1px solid var(--rule-soft); }
+.claim:last-child { border-bottom: none; }
+
+/* One row, one claim. The grid is what keeps the marks, the tiers and
+   the chevrons in vertical registers down the page — misaligned columns
+   are what made the old list read as prose rather than as a table. */
+.claim-head {
+  display: grid;
+  grid-template-columns: 1.15rem minmax(9rem, auto) minmax(0, 1fr) auto 0.8rem;
+  align-items: baseline;
+  gap: 0.6rem;
+  width: 100%;
+  background: none;
+  border: none;
+  padding: 0.36rem 0;
+  text-align: left;
+  cursor: pointer;
+}
+
+.claim-head:hover { background: rgba(255, 255, 255, 0.02); }
+
+/* Ten across rather than seven, with a ring of the same colour held
+   away from the dot. The ring is what makes a small disc read as
+   deliberate on a dark ground instead of as a speck of dust. */
+.mark {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  justify-self: center;
+  align-self: center;
+  background: currentColor;
+  box-shadow: 0 0 0 2px color-mix(in srgb, currentColor 22%, transparent);
+}
+
+.tier-A .mark { color: var(--proved); }
+.tier-D .mark { color: var(--derived); }
+.tier-X .mark { color: var(--unproved); }
+
+.claim-headline { color: var(--text); font-size: 13px; }
+
+.claim-note {
+  color: var(--muted);
+  font-size: 11.5px;
+  font-family: var(--data);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.claim-tier {
+  font-family: var(--data);
+  font-size: 11px;
+  letter-spacing: 0.03em;
+  color: var(--muted);
+}
+
+.tier-A .claim-tier { color: var(--proved); }
+.tier-D .claim-tier { color: var(--derived); }
+.tier-X .claim-tier { color: var(--unproved); }
+
+/* A rotating caret rather than a plus or an arrow: it says "there is more
+   below this line" without competing with the tier marks for attention. */
+.chevron {
+  justify-self: end;
+  align-self: center;
+  width: 5px;
+  height: 5px;
+  border-right: 1.5px solid var(--muted);
+  border-bottom: 1.5px solid var(--muted);
+  transform: rotate(-45deg);
+  transition: transform 120ms ease;
+}
+
+.claim.open .chevron, .criterion.open .chevron { transform: rotate(45deg); }
+
+@media (prefers-reduced-motion: reduce) {
+  .chevron { transition: none; }
+}
+
+.claim-body {
+  padding: 0.15rem 0 0.7rem 1.5rem;
+  border-left: 1px solid var(--rule);
+  margin-left: 0.42rem;
+}
+
+.claim-id {
+  font-family: var(--data);
+  font-size: 11px;
+  color: var(--heading);
+  margin-bottom: 0.35rem;
+}
+
+.number {
+  display: grid;
+  grid-template-columns: 8.5rem minmax(0, 1fr);
+  gap: 0.6rem;
+  padding: 0.12rem 0;
+  font-size: 12px;
+}
+
+.number-label { color: var(--muted); font-family: var(--data); font-size: 11px; }
+
+.number-value {
+  font-family: var(--data);
+  color: var(--figure);
+  font-variant-numeric: tabular-nums;
+  word-break: break-all;
+}
+
+.number-value.long { font-size: 11px; line-height: 1.5; }
+
+.depends, .evidence {
+  font-size: 11.5px;
+  color: var(--muted);
+  margin: 0.4rem 0 0;
+}
+
+.evidence .mono { color: var(--heading); }
+
+.order {
+  display: grid;
+  gap: 0.2rem;
+  margin-top: 1rem;
+  padding-top: 0.8rem;
+  border-top: 1px solid var(--rule-soft);
+}
+
+.order-label { font-size: 11px; color: var(--muted); }
+
+.order-value {
+  font-size: 11px;
+  line-height: 1.55;
+  color: var(--figure);
+  word-break: break-all;
+}
+
+/* right rail: the verdict ------------------------------------------ */
+
+.verdict h2 {
+  font-family: var(--display);
+  font-weight: 400;
+  font-size: 1.05rem;
+  margin: 0 0 0.45rem;
+  color: var(--bright);
+}
+
+.verdict select {
+  width: 100%;
+  background: var(--sunk);
+  border: 1px solid var(--rule);
+  border-radius: 3px;
+  padding: 0.3rem 0.45rem;
+  font-size: 12px;
+  color: var(--text);
+  cursor: pointer;
+}
+
+.verdict select:hover { border-color: var(--heading); }
+
+.criteria { list-style: none; margin: 0; padding: 0.3rem 0; }
+
+.criterion { border-bottom: 1px solid var(--rule-soft); }
+.criterion:last-child { border-bottom: none; }
+
+.criterion-head {
+  display: grid;
+  grid-template-columns: 0.95rem minmax(0, 1fr) auto 0.7rem;
+  grid-template-areas:
+    "dot id     status chevron"
+    ".   detail detail .";
+  align-items: baseline;
+  gap: 0.15rem 0.5rem;
+  width: 100%;
+  background: none;
+  border: none;
+  padding: 0.4rem 1rem 0.45rem 0.85rem;
+  text-align: left;
+  cursor: pointer;
+}
+
+.criterion-head[disabled] { cursor: default; }
+.criterion-head:not([disabled]):hover { background: rgba(255, 255, 255, 0.02); }
+
+.dot {
+  grid-area: dot;
+  justify-self: center;
+  align-self: center;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: currentColor;
+  box-shadow: 0 0 0 2px color-mix(in srgb, currentColor 22%, transparent);
+}
+
+.criterion.pass .dot { color: var(--proved); }
+.criterion.fail .dot { color: var(--fail); }
+.criterion.undecided .dot { color: var(--undecided); }
+
+.criterion-id {
+  grid-area: id;
+  font-family: var(--data);
+  font-size: 11.5px;
+  color: var(--text);
+}
+
+.criterion-detail {
+  grid-area: detail;
+  font-family: var(--data);
+  font-size: 11px;
+  color: var(--muted);
+  line-height: 1.4;
+  /* An embedding degree over a prime field is a 256-bit number, and it
+     appears here in full. Breaking it anywhere is better than pushing
+     the column open or clipping the comparison it belongs to. */
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+.criterion-status {
+  grid-area: status;
+  white-space: nowrap;
+  font-size: 10.5px;
+  letter-spacing: 0.03em;
+  font-family: var(--data);
+}
+
+.criterion.pass .criterion-status { color: var(--proved); }
+.criterion.fail .criterion-status { color: var(--fail); }
+.criterion.undecided .criterion-status { color: var(--undecided); }
+
+.criterion-head .chevron { grid-area: chevron; }
+
+.criterion-body {
+  padding: 0 1rem 0.7rem 1.7rem;
+  overflow-wrap: anywhere;
+  overflow-wrap: anywhere;
+  font-size: 11.5px;
+  line-height: 1.45;
+  color: var(--muted);
+}
+
+.criterion-model {
+  margin: 0 0 0.4rem;
+  padding-left: 0.6rem;
+  border-left: 2px solid var(--rule);
+  color: var(--muted);
+}
+
+.criterion-model strong { color: var(--heading); font-weight: 600; }
+
+.criterion-why { margin: 0; }
+
+/* The verdict itself is the one place colour is allowed to fill rather
+   than outline: it is the single sentence a reader came for. */
+.rail-foot.result-passes { background: rgba(63, 185, 80, 0.09); }
+.rail-foot.result-fails { background: rgba(248, 81, 73, 0.09); }
+.rail-foot.result-cannot { background: rgba(210, 153, 34, 0.09); }
+
+.result { margin: 0; font-size: 12.5px; color: var(--text); }
+.result strong { color: var(--bright); }
+.result-passes .result strong { color: var(--proved); }
+.result-fails .result strong { color: var(--fail); }
+.result-cannot .result strong { color: var(--undecided); }
+
+.caveat { margin: 0.4rem 0 0; font-size: 11px; color: var(--muted); }
+
+/* narrow windows --------------------------------------------------- */
+
+/* Below this the three panes stop being three panes. The rails become
+   bands and the page is allowed to scroll again, because a 14rem column
+   on a phone is not a column. */
+@media (max-width: 62rem) {
+  body { overflow: auto; }
+
+  .shell {
+    grid-template-columns: minmax(0, 1fr);
+    height: auto;
+    min-height: 100dvh;
+  }
+
+  .rail, .dossier { overflow: visible; grid-template-rows: auto auto auto; }
+  .rail-scroll, .dossier-scroll { overflow: visible; }
+  .index { border-right: none; border-bottom: 1px solid var(--rule); }
+  .verdict { border-left: none; border-top: 1px solid var(--rule); }
+  .curves { display: flex; flex-wrap: wrap; gap: 0.2rem; padding: 0.5rem 0.6rem; }
+  .curves li { flex: 1 1 8rem; }
+  .index .rail-foot { display: none; }
+}
+
+/* the digest strip ------------------------------------------------- */
+
+.digest-label {
+  color: var(--muted);
+  opacity: 0.7;
+  margin-right: 0.45rem;
+  letter-spacing: 0.04em;
+}
+
+.digest {
+  opacity: 0.8;
+  user-select: all;          /* one click selects the whole thing */
+}
+
+.reproducible {
+  margin: 0.3rem 0 0;
+  font-size: 10.5px;
+  color: var(--muted);
+  line-height: 1.4;
+}
+
+/* what a claim rests on -------------------------------------------- */
+
+.depends { margin: 0.5rem 0 0; font-size: 11.5px; }
+
+.depends-label {
+  display: block;
+  color: var(--muted);
+  font-size: 10.5px;
+  letter-spacing: 0.03em;
+  margin-bottom: 0.15rem;
+}
+
+.depends ul {
+  list-style: none;
+  margin: 0;
+  padding: 0 0 0 0.7rem;
+  border-left: 1px solid var(--rule);
+}
+
+.depends li {
+  font-family: var(--data);
+  font-size: 11px;
+  color: var(--heading);
+  padding: 0.05rem 0;
+}
+
+/* the bytes themselves --------------------------------------------- */
+
+/* Closed by default and unstyled inside. It is a wall of decimal digits,
+   here for the reader who means to check a digest by hand rather than
+   take this page's word that the pool is intact. */
+.raw { margin-top: 0.55rem; }
+
+.raw summary {
+  font-size: 11px;
+  color: var(--muted);
+  cursor: pointer;
+  list-style: none;
+}
+
+.raw summary::-webkit-details-marker { display: none; }
+.raw summary::before { content: "› "; }
+.raw[open] summary::before { content: "⌄ "; }
+.raw summary:hover { color: var(--text); }
+
+.raw pre {
+  margin: 0.35rem 0 0;
+  padding: 0.5rem 0.6rem;
+  max-height: 14rem;
+  overflow: auto;
+  background: var(--sunk);
+  border: 1px solid var(--rule);
+  border-radius: 3px;
+  font-size: 10.5px;
+  line-height: 1.4;
+  color: var(--figure);
+  white-space: pre-wrap;
+  word-break: break-all;
+}
+
+/* model-dependent criteria ----------------------------------------- */
+
+/* Visible without opening anything. A threshold drawn from an estimate
+   can move without any fact moving, and that is worth knowing while
+   scanning rather than after reading. */
+.model-flag {
+  grid-area: status;
+  justify-self: end;
+  align-self: baseline;
+  white-space: nowrap;
+  margin-right: 4.2rem;
+  font-family: var(--data);
+  font-size: 9.5px;
+  letter-spacing: 0.04em;
+  color: var(--derived);
+  border: 1px solid currentColor;
+  border-radius: 2px;
+  padding: 0 0.22rem;
+  opacity: 0.75;
+}
+
+.whence {
+  margin: 0 0 0.45rem;
+  font-size: 10.5px;
+  line-height: 1.4;
+  color: var(--muted);
+}
+
+/* long numbers ----------------------------------------------------- */
+
+/* Grouped in fours and aligned on a common grid, so two orders of the
+   same size can be compared by eye rather than by counting. Tabular
+   figures are what make the columns line up at all. */
+.number-value, .order-value, .digest, .raw pre {
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum" 1;
+}
+
+.number { align-items: start; }
+
+
+/* Two criteria in a tall column read as an error rather than as an
+   answer. Spacing them out is not decoration: a policy with two rules is
+   a short policy, and the column should look like a short list rather
+   than like a long one that failed to load. */
+.criteria { padding: 0.5rem 0 1rem; }
+
+.criterion-head { padding-top: 0.55rem; padding-bottom: 0.6rem; }
+
+.verdict .rail-scroll { display: flex; flex-direction: column; }
+
+/* And when there are few, they sit against the top with the empty space
+   below them owned by the panel rather than left hanging. */
+.criteria::after {
+  content: "";
+  display: block;
+  flex: 1 1 auto;
+}
+
+
+/* the legend ------------------------------------------------------- */
+
+/* Placed above the first claim it explains, at the size of the marks it
+   explains, saying what the distinction means rather than what it is
+   called. Two earlier attempts failed for the same reason: they asked
+   the reader to memorise a mapping and apply it later, and the gap
+   between the two was where attention was lost. */
+.legend {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr));
+  gap: 0.3rem 1.2rem;
+  padding: 0.7rem 0.9rem;
+  margin: 0.2rem 0 0.6rem;
+  background: var(--sunk);
+  border: 1px solid var(--rule);
+  border-radius: 4px;
+}
+
+.legend-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+  font-size: 11.5px;
+}
+
+.legend-item .mark { margin-top: 0.28rem; }
+.legend-item.proved { color: var(--proved); }
+.legend-item.derived { color: var(--derived); }
+.legend-item.unproved { color: var(--unproved); }
+
+.legend-item b {
+  display: block;
+  font-weight: 600;
+  color: currentColor;
+  font-family: var(--data);
+  font-size: 11px;
+  letter-spacing: 0.01em;
+}
+
+/* The explanation is the part that does the work, so it is set in the
+   reading face and in the reading colour rather than in the accent. */
+.legend-item em {
+  display: block;
+  font-style: normal;
+  color: var(--muted);
+  font-size: 11px;
+  line-height: 1.35;
+  margin-top: 0.05rem;
+}
+
+
+/* the verdict from the verifier ------------------------------------ */
+
+/* The one line on the page that is not the page's own reading. Set apart
+   from the claims below it, which are transcribed from the document,
+   because the difference between "this file says" and "this was checked"
+   is the difference the whole project is about. */
+.verified {
+  margin: 0.45rem 0 0.3rem;
+  padding: 0.4rem 0.6rem;
+  border-radius: 3px;
+  font-size: 11.5px;
+  line-height: 1.45;
+  border-left: 3px solid currentColor;
+}
+
+.verified b { font-weight: 600; }
+
+.verified.accepted {
+  color: var(--proved);
+  background: color-mix(in srgb, var(--proved) 10%, transparent);
+}
+
+.verified.refused {
+  color: var(--unproved);
+  background: color-mix(in srgb, var(--unproved) 10%, transparent);
+}
+
+/* Neither green nor red: nothing was established either way, and a
+   colour that read as a verdict would be a lie about a missing one. */
+.verified.unavailable {
+  color: var(--undecided);
+  background: color-mix(in srgb, var(--undecided) 10%, transparent);
+}
+
+
+/* The banner before it is a verdict. Same slot, same shape, so the
+   reader watches one place and sees it change rather than hunting for
+   news elsewhere on the page. */
+.verified.pending {
+  color: var(--derived);
+  background: color-mix(in srgb, var(--derived) 10%, transparent);
+}

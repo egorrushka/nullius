@@ -1,0 +1,5 @@
+A curve model nothing can convert.
+
+    The list is closed for the same reason the family list is: a model a
+    verifier cannot recompute is not a claim, and skipping the ones it
+    does not recognise would let a bundle assert anything.

@@ -1,0 +1,33 @@
+name: glv-endomorphism
+title: GLV endomorphism availability
+source: >-
+  Gallant, Lambert and Vanstone, "Faster point multiplication on elliptic
+  curves with efficient endomorphisms", CRYPTO 2001.
+
+accept_tiers: [A, D]
+
+# This policy exists to make a point about the architecture rather than to
+# recommend anything: it asks for exactly the property SafeCurves rejects.
+# An implementer who wants the GLV speedup needs a small discriminant, and
+# the same proved fact that fails one policy passes this one. Facts do not
+# change; opinions about them do.
+criteria:
+  - id: small-discriminant
+    description: >-
+      A discriminant of -3 or -4 gives an efficiently computable
+      endomorphism, which decomposes the scalar and cuts the point
+      multiplication cost by roughly a third.
+    claim: curve.cm
+    field: fundamental
+    transform: abs
+    op: le
+    value: "4"
+    citation: GLV 2001, section 4
+
+  - id: prime-order
+    description: >-
+      The scalar decomposition argument assumes a group of prime order.
+    claim: curve.order
+    field: cofactor
+    op: eq
+    value: "1"

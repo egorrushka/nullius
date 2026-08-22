@@ -1,0 +1,11 @@
+An elimination run on the subject's own curve over the extension.
+
+    The mutation a reviewer found, and the only one here whose every
+    stated condition is met. The curve is honest, the points are honest
+    and found by the same abscissa scan a producer uses, each of them
+    eliminates something, exactly one candidate survives, and it lies in
+    the Hasse window. What it settles is the order of `E(F_p^2)` — which
+    `r` divides, so the cofactor claim downstream is satisfied too — and
+    that group is not the second one. Before the census on `r` existed the
+    whole bundle verified, and the argument was wrong about which curve it
+    was talking about rather than wrong about any step.

@@ -1,0 +1,100 @@
+name: safecurves-2024
+title: SafeCurves criteria, the subset this format can express
+source: >-
+  Bernstein and Lange, "Safe curves for elliptic-curve cryptography",
+  ePrint 2024/1265, published 2025 in LNCS 15600.
+
+  This is a partial reconstruction, and the title says so because the
+  distinction matters. Passing this policy is not passing SafeCurves.
+  Several of its criteria are about how a curve is implemented rather
+  than about numbers a certificate can carry — complete addition
+  formulas, a usable Montgomery ladder, indistinguishability from
+  uniform random strings — and none of those are expressible here.
+
+  The rigidity criterion below is also weaker than the source's. It asks
+  whether the parameters follow from a documented derivation, which is
+  what a certificate can establish. SafeCurves asks the further question
+  of whether the *input* to that derivation is explained, and calls a
+  curve manipulable when it is not. NIST P-256 satisfies the first and
+  fails the second: its coefficient is reproducible from a published
+  seed, and the seed itself has never been accounted for. A reader who
+  takes a pass here as a SafeCurves pass would get that backwards.
+
+# Only proved facts count here. A number a program merely reported is
+# treated as if the bundle had said nothing.
+accept_tiers: [A, D]
+
+criteria:
+  - id: prime-order
+    description: >-
+      The group must have prime order, so that no small subgroup exists for
+      an attacker to confine a point into.
+    claim: curve.order
+    field: cofactor
+    op: eq
+    value: "1"
+    citation: SafeCurves, "Prime fields and prime orders"
+
+  - id: transfers
+    description: >-
+      The embedding degree must be large, or a pairing carries the discrete
+      logarithm into a finite field where index calculus applies.
+    claim: curve.embedding
+    field: degree
+    op: ge
+    value_from:
+      claim: curve.order
+      field: n
+      minus: 1
+      over: 100
+    citation: SafeCurves, "Transfers"
+
+  - id: complex-multiplication
+    description: >-
+      The CM field discriminant must be large. A small one gives the curve
+      an efficiently computable endomorphism and marks it as special rather
+      than typical.
+    claim: curve.cm
+    field: fundamental
+    transform: abs
+    op: gt
+    value: "2^100"
+    citation: SafeCurves, "Complex-multiplication field discriminants"
+
+  - id: twist-security
+    description: >-
+      The quadratic twist must also have a large prime factor, or an
+      implementation that skips point validation can be attacked through
+      it: a point handed to such an implementation can be one on the
+      twist, and what that buys an attacker is bounded by the largest
+      prime factor of the twist's order.
+
+      This criterion named a claim type `twist.security` that the format
+      never had, so it could not be decided for any curve at all and
+      returned unknown every time — which blocked a pass, correctly, but
+      for the wrong reason and without anyone noticing. It now reads the
+      factorisation the twist claim carries.
+    claim: twist.cardinality
+    field: largest_prime_factor
+    transform: bits
+    op: ge
+    value: "200"
+    citation: SafeCurves, "Twist security"
+
+  - id: rigidity
+    description: >-
+      The parameters must be reproducible from a documented derivation, so
+      that nobody could have searched for a curve with a hidden weakness.
+
+      This is the weaker half of what SafeCurves means by rigidity. It
+      establishes that the coefficient follows from the seed; it says
+      nothing about where the seed came from, and a seed chosen by
+      searching would satisfy it perfectly. Answering the second question
+      needs evidence about a derivation the standard never published,
+      which is a statement about the literature rather than about
+      numbers, and this format does not carry those.
+    claim: param.rigidity
+    field: reproduced
+    op: eq
+    value: "1"
+    citation: SafeCurves, "Rigidity"

@@ -1,0 +1,4 @@
+A family the verifier has never heard of.
+
+    The list is closed: a verifier that skipped families it did not
+    recognise would let a bundle assert membership in anything.

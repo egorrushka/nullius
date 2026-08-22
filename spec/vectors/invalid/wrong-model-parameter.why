@@ -1,0 +1,5 @@
+A Montgomery parameter that gives different Weierstrass coefficients.
+
+    The conversion is the claim: without it, a certificate for Curve25519
+    would carry a Weierstrass curve nobody uses under a name everybody
+    recognises, and a reader would have to take the map on faith.

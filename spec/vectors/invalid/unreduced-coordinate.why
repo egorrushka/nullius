@@ -1,0 +1,5 @@
+A coordinate written as x + p rather than x.
+
+    Arithmetically the same point; not the same document. The format has
+    one spelling per number, and a verifier that reduced silently would
+    accept a file no canonical producer could write.

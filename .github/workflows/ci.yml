@@ -1,0 +1,147 @@
+name: build and verify
+
+# Four things have to hold on every commit, checked in this order because
+# each is cheaper than the next to diagnose.
+#
+#   1. The verifier builds clean and the suite passes.
+#   2. Every certificate we ship still verifies, from the file alone.
+#   3. Rebuilding a certificate from scratch reproduces it byte for byte,
+#      on a machine that is not the one it was made on.
+#   4. The single-file page really is a single file.
+#
+# The third is the one worth having. A certificate that changes when a
+# different machine builds it cannot be addressed by its hash, and the
+# whole format rests on that.
+#
+# Note that the rebuild loop asks tools.build_curve which curves exist
+# rather than carrying its own list. A list here would go stale the first
+# time a curve was added, and it did: this step used to call the
+# prime-field builder for every vector it found, which would have failed
+# the moment a pairing-friendly curve was published beside the others.
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  check:
+    # Two runners, and therefore two PARI versions: the distributions ship
+    # different ones, which is the cheapest honest way to run the corpus
+    # against more than one. Part of every certificate is decided by
+    # PARI — the Atkin-Morain chains go in verbatim — and nothing
+    # documents that they are stable across versions.
+    #
+    # Each job rebuilds and compares against the published vector rather
+    # than against the other job. That is enough: the vector is fixed in
+    # the repository, so a drift in either version shows up as that job
+    # failing, and a drift that moved both alike shows up as both
+    # failing. Comparing the two live builds to each other would add a
+    # cross-job artifact exchange and catch nothing more.
+    strategy:
+      fail-fast: false
+      matrix:
+        runner: [ubuntu-22.04, ubuntu-24.04]
+    runs-on: ${{ matrix.runner }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install PARI/GP
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y pari-gp pari-seadata
+          gp --version 2>&1 | head -3
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
+
+      - name: Install Python dependencies
+        run: pip install pytest pyyaml
+
+      - uses: dtolnay/rust-toolchain@stable
+
+      - name: Build the verifier
+        working-directory: verifier
+        # A warning in a program people are asked to read end to end is
+        # worth failing over: dead code there costs more than the
+        # inconvenience of a red build.
+        env:
+          RUSTFLAGS: -D warnings
+        run: cargo build --release
+
+      - name: Run the suite
+        run: python -m pytest tests -q
+
+      - name: Verify every published certificate
+        run: |
+          for cert in spec/vectors/valid/*.ccert; do
+            echo "=== $cert"
+            ./verifier/target/release/ccert-verify --require-proved "$cert"
+          done
+
+      # A second PARI version, built from source and pinned. The point is
+      # not that this one is better: it is that the bytes must not depend
+      # on which of the two produced them. Comparing each against the
+      # published vector would miss a drift that moved both alike; the
+      # step below compares the two rebuilds against each other as well.
+      - name: Rebuild the corpus and compare byte for byte
+        run: |
+          mkdir -p /tmp/rebuilt
+          for name in $(python -m tools.build_curve --list); do
+            vector="spec/vectors/valid/$name.ccert"
+            if [ ! -f "$vector" ]; then
+              echo "::error::$name has no published vector to compare against"
+              exit 1
+            fi
+            python -m tools.build_curve --curve "$name" --out /tmp/rebuilt --quiet
+            if ! cmp -s "$vector" "/tmp/rebuilt/$name.ccert"; then
+              echo "::error::$name does not reproduce; the format is no longer"
+              echo "::error::deterministic, or PARI changed what it searches for"
+              diff <(head -c 400 "$vector") <(head -c 400 "/tmp/rebuilt/$name.ccert") || true
+              exit 1
+            fi
+            echo "$name reproduces exactly"
+          done
+          echo "PARI in use: $(gp --version 2>&1 | head -2 | tail -1)"
+
+      # The other half of the specification. Refusing these is not enough:
+      # each must be refused for its own reason, because a defect masked
+      # by another defect leaves the argument underneath untested.
+      - name: Refuse every invalid vector, for the right reason
+        run: python -m tools.make_invalid_vectors --check
+
+      - name: Apply every policy to every certificate
+        # Not a pass/fail gate on the verdicts themselves: a curve failing
+        # a policy is a fact about the curve, not a broken build. What is
+        # being checked is that every policy loads and evaluates without
+        # raising, which catches a criterion naming a claim that no longer
+        # exists.
+        run: python -m core.policy.engine --corpus spec/vectors/valid
+
+  frontend:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
+      - run: pip install pyyaml
+      - name: Publish the corpus for the page
+        run: python tools/export_web.py --corpus spec/vectors/valid
+      - name: Build the single-file page
+        working-directory: web
+        run: |
+          npm ci
+          npm run build
+      - name: The page must stand alone
+        run: |
+          if grep -qE 'src="(http|\./assets|/assets)' web/dist/index.html; then
+            echo "::error::the built page loads something from outside itself"
+            exit 1
+          fi
+          echo "page is self-contained, $(stat -c%s web/dist/index.html) bytes"

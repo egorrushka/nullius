@@ -1,0 +1,6 @@
+A claim carrying its own verdict, in a field no check covers.
+
+    `"tier": "proved"` next to a claim, in a document people read and
+    diff. Nothing in the verifier would ever look at it, which is the
+    problem rather than the reassurance: a reader would, and the format
+    exists so that what a reader sees is what a verifier checked.

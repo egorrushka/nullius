@@ -1,0 +1,4 @@
+A point that rules nothing out, added after the argument closed.
+
+    Padding in an argument is where a reader stops reading, so a point
+    that eliminates no candidate is refused rather than ignored.

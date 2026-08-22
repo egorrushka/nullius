@@ -1,0 +1,126 @@
+name: pairing-security-pre-tnfs
+title: 128-bit target, under the pre-2016 analysis
+source: >-
+  The estimates in use before the extended tower number field sieve,
+  following Menezes, Sarkar and Singh, "Challenges with assessing the
+  impact of NFS advances on the security of pairing-based cryptography",
+  Mycrypt 2016, which surveys what was assumed until then.
+
+# This policy is kept in the corpus deliberately, and it is not a
+# recommendation. It is the same question asked against the older model,
+# so that the effect of a model changing can be seen rather than
+# described. A certificate is identical under both; the verdicts are not.
+#
+# Nothing about BN254 changed in 2016. The curve is the same object, its
+# order is the same number, and every claim in its certificate holds today
+# exactly as it did then. What changed was an estimate of what an attacker
+# can afford, and that estimate lives here, in a policy, precisely because
+# it is the part that moves.
+
+accept_tiers: [A]
+
+criteria:
+  - id: subgroup-order-large
+    description: >-
+      Unchanged by any of this: generic attacks cost the square root of
+      the subgroup order, and that is a theorem rather than an estimate.
+      The threshold is 254 rather than 256 because that is what the
+      practice of the time accepted. A 254-bit subgroup gives 127 bits
+      against Pollard rho, and curves at that size were described as
+      128-bit throughout the period this policy reconstructs. Rounding it
+      up now would make the older judgement look stricter than it was, and
+      the point of keeping this policy is to show what was actually
+      believed.
+    claim: curve.order
+    field: n
+    transform: bits
+    op: ge
+    value: "254"
+    citation: Pollard rho.
+
+  - id: embedding-field-size
+    description: >-
+      The same fact from the bundle, the bit length of p times the
+      embedding degree, against the threshold the older analysis gave. The
+      general number field sieve was assumed to be the best available
+      approach, and a roughly 3000-bit embedding field was taken to put a
+      curve near 128 bits, by analogy with finite-field discrete logarithm
+      sizes of the day.
+    claim: field.characteristic
+    field: p
+    transform: bits
+    pow:
+      claim: curve.embedding
+      field: degree
+    op: ge
+    value: "3000"
+    model:
+      name: nfs-pre-2016
+      source: >-
+        The pre-2016 consensus, surveyed in Menezes, Sarkar and Singh,
+        Mycrypt 2016.
+      note: >-
+        Superseded. The tower number field sieve applies to exactly the
+        fields that arise as embedding fields of pairing-friendly curves,
+        and the ordinary sieve's cost was therefore the wrong benchmark
+        for them. This model is retained here to make the difference
+        visible, not because anyone should select parameters with it.
+
+        Two things about the number, so that 3000 does not read as
+        reverse-engineered from the answer. The formal figure of the
+        period was 3072 bits, the finite-field size NIST SP 800-57 pairs
+        with 128 bits of symmetric security. BN254 gives 3044, which is
+        already under it. So the description of BN254 as a 128-bit curve
+        was a community rounding even before 2016, not a table lookup —
+        and the threshold here is set to the practice rather than to the
+        table, because reconstructing the practice is the point.
+    citation: >-
+      By analogy with finite-field discrete logarithm sizes as understood
+      before 2016.
+
+  - id: g2-subgroup-security
+    description: >-
+      Independent of the model above, and unchanged by it.
+      The figure is an engineering floor, not a published bound. The cited
+      work establishes why the largest prime factor of the cofactor is the
+      quantity that matters; it does not name 100. Recorded as this
+      project's own, under the rule that a number says where it came from
+      or it does not appear.
+    claim: g2.order
+    field: largest_prime_factor
+    transform: bits
+    op: ge
+    value: "100"
+    citation: >-
+      Barreto, Costello, Misoczki, Naehrig, Pereira, Zanon, LATINCRYPT
+      2015.
+
+  - id: twist-relation-established
+    description: >-
+      The bundle must tie the second group's order to the subject, not
+      merely state one. A certificate can prove an order for some curve
+      over a quadratic extension and name the claim after G2 without
+      anything connecting the two, and a reader who did not look closely
+      would take the connection for granted. This criterion makes the
+      absence visible: with no `g2.twist` claim the verdict is undecided,
+      not a pass, because silence is not consent.
+
+      What the claim establishes is which of the six classes the proved
+      order belongs to. That the curve in the G2 evidence *is* that twist
+      is established separately, by `derive.order-elimination`: it checks
+      a' = 0 on that curve and a = 0 on the subject, which over a field
+      with q = 1 mod 3 makes it one of the six, and then takes the census
+      on r that says which one.
+
+      This paragraph used to say the opposite — that two curves can share
+      an order and the format goes no further. It went further. The
+      wording is corrected rather than dropped, because a reader who
+      learned the old limit should be able to see that it moved.
+    claim: g2.twist
+    field: class
+    op: le
+    value: "5"
+    citation: >-
+      Hess, Smart and Vercauteren, "The eta pairing revisited", IEEE
+      Transactions on Information Theory 52 (2006), on the orders of the
+      sextic twists of a curve with j = 0.

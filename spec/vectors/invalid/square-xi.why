@@ -1,0 +1,5 @@
+A tower modulus that factors.
+
+    xi must be a non-residue *in F_p^2*, which is stricter than being one
+    in F_p. A square there makes the quotient a ring with zero divisors,
+    and every order computed in it is void.

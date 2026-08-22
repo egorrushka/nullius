@@ -1,0 +1,5 @@
+Evidence proving an order for a different curve over the same field.
+
+    Every step of the proof is honest. It is about y^2 = x^3 + b' rather
+    than the subject's curve, and until this was caught the verifier had
+    no reason to notice.

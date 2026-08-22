@@ -1,0 +1,85 @@
+name: snark-suitability
+title: Fitness for SNARK proving systems
+source: >-
+  Engineering requirements common to pairing-based proving systems, rather
+  than a security analysis. What is below decides whether a curve can be
+  used efficiently, not whether it is safe; for that see the pairing
+  security policies alongside this one.
+
+# No `model` block appears here, and that is not an oversight. None of
+# these thresholds is an estimate of what an attacker can afford: they are
+# properties a proving system needs in order to work at all, and they do
+# not move when a cost model does. The origin of each number is still
+# named, because a threshold with no derivation is the defect this project
+# spent a review cycle removing.
+accept_tiers: [A]
+
+criteria:
+  - id: two-adic-domain
+    description: >-
+      Proving systems evaluate polynomials over a multiplicative subgroup
+      of order a power of two, so the size of the largest such subgroup
+      caps the circuit that can be proved without padding tricks. That
+      size is the exponent of two in r - 1, and 2^20 is roughly a million
+      constraints — the point below which a general-purpose system starts
+      to be awkward rather than merely slower.
+
+      This is an engineering floor drawn from practice, not a theorem and
+      not a security estimate, and no source publishes it. BLS12-381
+      offers 32 and BN254 offers 28, both comfortably above it; BLS24-315
+      offers 22 and BLS24-509 offers 13, so the floor is the difference
+      between the two BLS24 curves for this purpose and is doing real work
+      rather than passing everything. The criterion earns its place by
+      failing loudly for a curve that offers 3, which is what most curves
+      offer.
+
+      Where 20 came from, stated because every other number in these files
+      states it: 2^20 is roughly a million constraints, the scale at which
+      deployed general-purpose systems operate. It is this project's own
+      figure and it should be moved when practice moves, not defended as
+      though a paper set it.
+    claim: curve.embedding
+    field: two_adicity
+    op: ge
+    value: "20"
+    citation: >-
+      The requirement follows from radix-2 FFT evaluation over the
+      subgroup; the particular floor is the scale at which deployed
+      systems operate rather than a published bound.
+
+  - id: pairing-exists
+    description: >-
+      A proving system built on pairings needs one to be computable, which
+      means an embedding degree small enough to work in.
+    claim: curve.embedding
+    field: degree
+    op: le
+    value: "24"
+    citation: >-
+      draft-irtf-cfrg-pairing-friendly-curves, on the definition of a
+      pairing-friendly curve.
+
+  - id: subgroup-order-large
+    description: >-
+      Generic attacks cost the square root of the subgroup order. Stated
+      here so the policy stands alone: a curve that satisfies every
+      engineering requirement and none of the security ones should not
+      read as suitable.
+    claim: curve.order
+    field: n
+    transform: bits
+    op: ge
+    value: "254"
+    citation: Pollard rho.
+
+  - id: twist-relation-established
+    description: >-
+      The second group has to be tied to the subject, not merely stated.
+      Absent that, the verdict is undecided rather than a pass.
+    claim: g2.twist
+    field: class
+    op: le
+    value: "5"
+    citation: >-
+      Hess, Smart and Vercauteren, "The eta pairing revisited", IEEE
+      Transactions on Information Theory 52 (2006).

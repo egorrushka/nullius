@@ -1,0 +1,48 @@
+[package]
+name = "ccert-verify"
+version = "0.0.0"
+edition = "2021"
+description = "Independent verifier for .ccert bundles"
+license = "Apache-2.0"
+
+# Both shapes from one source. `rlib` is what the command line links
+# against; `cdylib` is what wasm-bindgen turns into a module the page can
+# call. The point of building twice rather than writing twice: whatever
+# the browser reports, the command line reports, because it is the same
+# code compiled for a different machine.
+# Named apart from the binary on purpose. On Windows the two differ only
+# by a hyphen, which the toolchain normalises away when it names debug
+# files — so `ccert-verify` the binary and `ccert_verify` the library both
+# wanted to write `ccert_verify.pdb`, and cargo warned about the
+# collision. A shorter library name settles it without renaming the
+# executable, which is referenced by the release scripts and by every
+# instruction anyone has been given.
+[lib]
+name = "ccert"
+crate-type = ["cdylib", "rlib"]
+
+[[bin]]
+name = "ccert-verify"
+path = "src/main.rs"
+
+[dependencies]
+num-bigint = "0.4"
+num-integer = "0.1"
+num-traits = "0.2"
+sha1 = "0.10"
+sha2 = "0.10"
+
+# Only for the browser build. A native compile never sees this, so
+# nothing about the command line changes and its dependency list is
+# exactly what it was.
+#
+# The version is pinned exactly on purpose: the library and the
+# `wasm-bindgen` command line tool must agree, and a mismatch fails with a
+# message that does not say so.
+[target.'cfg(target_arch = "wasm32")'.dependencies]
+wasm-bindgen = "=0.2.127"
+
+[profile.release]
+opt-level = 3
+lto = true
+strip = true

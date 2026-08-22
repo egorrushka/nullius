@@ -1,0 +1,12 @@
+A class index labelled with a degree it does not index into.
+
+    The six classes over F_p^4 are a different set from the six over
+    F_p^2, so an index without a degree is a number without a meaning.
+    Relabelling one as the other has to be refused rather than read as a
+    convention, and it is — at the first quantity that depends on the
+    degree, which is `v`. The whole enumeration is built from the trace
+    over F_p^degree, so a relabelled claim disagrees with its own evidence
+    before the index is ever reached. The expectation names `v` rather
+    than the index because that is what the verifier actually says, and a
+    vector whose stated reason differs from the real one is the defect
+    this directory exists to catch.

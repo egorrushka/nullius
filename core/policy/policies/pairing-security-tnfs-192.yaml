@@ -1,0 +1,141 @@
+name: pairing-security-tnfs-192
+title: 192-bit target, under the tower number field sieve
+source: >-
+  Kim and Barbulescu, "Extended tower number field sieve", CRYPTO 2016,
+  with parameter sizes from Barbulescu and Duquesne, "Updating key size
+  estimations for pairings", Journal of Cryptology 32 (2019), 1298-1336.
+
+# What this policy decides, and what it does not.
+#
+# It used to say that nothing in the corpus could satisfy it and that the
+# format could not certify a second group over an extension of degree 3 or
+# 4. Both stopped being true: `derive.order-elimination` settles a G2
+# order at degree 4 without any factorisation, and BLS24-315 and BLS24-509
+# are certified. The comment is replaced rather than deleted so that a
+# reader who remembers the old one can see what changed.
+#
+# Nor does it return undecided on the twist any more. That was the last
+# gap: `twist-relation-established` reads `g2.twist`, which named one of
+# the six classes over F_p^2 and was therefore omitted from a degree-4
+# bundle. The claim now asserts the degree beside the class, so the index
+# names the set it indexes and BLS24 carries it like anyone else.
+#
+# What a curve is judged on here is therefore the embedding field size and
+# nothing procedural.
+accept_tiers: [A]
+
+criteria:
+  - id: subgroup-order-large
+    description: >-
+      Generic attacks cost the square root of the subgroup order, so 192
+      bits on the curve side needs 384 there. Not an estimate: the square
+      root bound is a theorem, and it does not move when a cost model
+      does.
+
+      The threshold is 382 rather than 384, for the same reason the
+      128-bit policies use 254 rather than 256. Curves are built at
+      family-determined sizes and the deployed ones at this level sit a
+      bit or two under the round number; demanding the round number would
+      fail every candidate on a rounding convention while saying nothing
+      about the question the policy exists to ask.
+    claim: curve.order
+    field: n
+    transform: bits
+    op: ge
+    value: "382"
+    citation: Pollard rho.
+
+  - id: embedding-field-size
+    description: >-
+      The size of the embedding field, computed exactly as the bit length
+      of p raised to the embedding degree — both proved claims of the
+      bundle. The threshold comes from the model named below and is not a
+      fact of any certificate.
+
+      A curve of embedding degree 12 would need a 1073-bit characteristic
+      to reach this, which is why the families that make sense at this
+      level are the higher-degree ones: BLS24 at k = 24 reaches it with a
+      much smaller p, and KSS18 at k = 18 likewise.
+
+      BLS24-509 is in the corpus and fails this criterion at 12202 bits
+      against 12871. Read that as what it is. The arithmetic is exact and
+      the threshold is the one the named model gives, so under this model
+      the curve does not clear the bar. It does not follow that the curve
+      does not reach 192 bits, and a reader should not take it that way:
+      the threshold is a generic worst-case figure for fields where the
+      fastest sieve variant applies, and the per-curve analyses that came
+      after — Guillevic and Singh's alpha-based simulator, and the
+      short-lists built on it — place BLS24-509 at the 192-bit level. This
+      policy states one model's verdict; where two defensible models
+      disagree, saying which one is speaking is the whole point of naming
+      it.
+    claim: field.characteristic
+    field: p
+    transform: bits
+    pow:
+      claim: curve.embedding
+      field: degree
+    op: ge
+    value: "12871"
+    model:
+      name: tnfs-kim-barbulescu-2016
+      source: >-
+        Kim and Barbulescu, CRYPTO 2016; sizes from Barbulescu and
+        Duquesne, J. Cryptology 2019.
+      note: >-
+        12871 is the embedding field size Barbulescu and Duquesne give for
+        the 192-bit level, the companion to the 5004 bits their analysis
+        gives for 128. Both numbers come from the same table, and neither
+        is a recollection: the rule this project follows after an earlier
+        threshold was found to have no derivation is that a number states
+        where it came from or it does not appear.
+    citation: >-
+      Barbulescu and Duquesne, updated size tables for pairing families;
+      Guillevic, "A short list of pairing-friendly curves at the 128-bit
+      security level", PKC 2020, for the corresponding treatment one level
+      down.
+
+  - id: g2-subgroup-security
+    description: >-
+      The largest prime factor of the second group's cofactor bounds what
+      a small-subgroup attack extracts from an implementation that omits
+      membership checks.
+
+      The number is the weakest-provenanced in this file and is labelled
+      so rather than dressed up. The cited work establishes why the
+      quantity matters; it does not publish a figure for the 192-bit
+      level. 160 is this project's own scaling of the 100 used at 128, in
+      the same proportion as the security levels, and no source states it.
+      Under the rule this project adopted — a number says where it came
+      from or it does not appear — that origin is what it has to say.
+    claim: g2.order
+    field: largest_prime_factor
+    transform: bits
+    op: ge
+    value: "160"
+    citation: >-
+      Barreto, Costello, Misoczki, Naehrig, Pereira, Zanon, "Subgroup
+      security in pairing-based cryptography", LATINCRYPT 2015.
+
+  - id: twist-relation-established
+    description: >-
+      The second group must be tied to the subject rather than merely
+      stated alongside it. Absent the tie, undecided rather than a pass.
+
+      The tie is established by `derive.order-elimination`, which shows
+      the curve in the G2 evidence is the sextic twist carrying the proved
+      subgroup; this criterion reads the class index that names which of
+      the six it is. The index is asserted with the degree it indexes
+      into, so it means the same thing over F_p^2 and over F_p^4 and this
+      criterion decides for every pairing curve in the corpus.
+
+      It did not always. The claim was confined to degree 2 and BLS24
+      returned undecided here — on a missing label rather than a missing
+      relation, which is a distinction worth having had to make.
+    claim: g2.twist
+    field: class
+    op: le
+    value: "5"
+    citation: >-
+      Hess, Smart and Vercauteren, "The eta pairing revisited", IEEE
+      Transactions on Information Theory 52 (2006).

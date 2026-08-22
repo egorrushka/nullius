@@ -1,0 +1,5 @@
+A subject with a line asserting something outside the format.
+
+    The top level of a bundle has always refused unknown fields. Nothing
+    below it did, so this was the way to put an unchecked sentence into a
+    certificate and have it verify.

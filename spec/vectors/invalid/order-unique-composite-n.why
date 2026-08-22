@@ -1,0 +1,13 @@
+A composite order confirmed by a point of order two.
+
+    `check.order-unique` needs n prime: then order(P) is 1 or n, the point
+    is affine so it is not 1, and a window narrower than n admits exactly
+    one multiple. Without primality `n·P = O` shows only that order(P)
+    divides n — and a 2-torsion point satisfies every even n in the
+    window.
+
+    The vector uses Curve25519, whose cofactor of 8 guarantees a point of
+    order 2, and asserts n = #E + 2: composite, inside the window, larger
+    than 4·sqrt(p), and not the group order. The dependency on
+    `curve.order.prime` was declared and tier-checked all along; its value
+    was simply never read.
