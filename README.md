@@ -12,9 +12,8 @@
 [![verifier](https://img.shields.io/badge/verifier-4559%20lines%20of%20Rust-c96)](verifier/src)
 
 🇺🇦 &nbsp;**Made in Ukraine**
-<img src="docs/ukraine_flag.gif" width="250" alt="Ukraine"/>
 <img src="docs/dossier.png" alt="A dossier for secp256k1: seven claims, six of them proved, judged by two policies that disagree" width="820">
-
+<img src="docs/ukraine_flag.gif" width="250" align="center" alt="Ukraine"/>
 </div>
 
 ---
