@@ -21,6 +21,31 @@
 
 ---
 
+**What this is.** A tool that turns claims about an elliptic curve —
+"prime order", "large discriminant", "parameters from a seed" — into a
+certificate that anyone can re-check, instead of a table you have to take
+on faith. Each claim travels with the evidence for it, and a small
+independent verifier re-establishes every claim from the file alone, in a
+fraction of a second, on a machine that did none of the original work.
+
+**Who it is for.** People who decide which curves go into real systems and
+would rather verify than trust: cryptographers presenting a curve,
+implementers vetting one before shipping it, auditors checking someone
+else's, standards work that has to answer "how do we know there is no
+backdoor". It is strongest on the pairing-friendly curves that modern
+zero-knowledge and signature systems rest on (BLS12-381, BN254, and the
+BLS24 family), where the usual claims are hardest to check by hand.
+
+**What state it is in.** A working demonstration of the approach, with a
+Rust verifier, a browser that re-checks in the page, and eight curves
+certified end to end. It is a proof of concept meant to be examined and
+argued with, not a finished library — the format is the author's own, it
+has had no external audit, and the corpus is a demonstration set rather
+than exhaustive coverage. Read it as "here is a way to make curve
+parameters verifiable; look, and tell me where it is wrong."
+
+---
+
 Claims about elliptic curves normally arrive as tables. This curve has
 prime order, that one has a large discriminant, this one's parameters came
 from a seed. The numbers are usually right, and there is usually no way to
