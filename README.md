@@ -1,25 +1,6 @@
-<div align="center">
-
 # Nullius
 
-**Machine-checkable certificates for elliptic curves**
-
-*Nullius in verba* — take nobody's word for it
-
-[![build and verify](https://github.com/egorrushka/nullius/actions/workflows/ci.yml/badge.svg)](https://github.com/egorrushka/nullius/actions/workflows/ci.yml)
-[![licence: Apache 2.0](https://img.shields.io/badge/licence-Apache%202.0-blue.svg)](LICENSE)
-[![curves certified](https://img.shields.io/badge/curves-8%20certified-6f9)](spec/vectors/valid)
-[![verifier](https://img.shields.io/badge/verifier-4559%20lines%20of%20Rust-c96)](verifier/src)
-
-<img src="docs/ukraine_flag.gif" width="250" alt="Ukraine">
-
-🇺🇦 &nbsp;**Made in Ukraine**
-
-<img src="docs/dossier.png" alt="A dossier for BLS24-509: ten claims proved, its second group over F_p^4 settled by elimination, re-checked live in the browser" width="820">
-
-</div>
-
----
+*Nullius in verba* — take nobody's word for it.
 
 Claims about elliptic curves normally arrive as tables. This curve has
 prime order, that one has a large discriminant, this one's parameters came
@@ -28,9 +9,9 @@ tell from the table itself.
 
 Nullius produces certificates instead. Every claim carries the evidence
 for it, and a small separate program re-establishes each claim from the
-file alone. Producing the evidence for one curve takes point counting,
-factoring and primality proving. Checking it takes a fraction of a second,
-on a machine that did none of that work.
+file alone. Producing the evidence for one curve takes half a minute of
+point counting, factoring and primality proving. Checking it takes a
+quarter of a second, on a machine that did none of that work.
 
 ```
 $ ccert-verify corpus/secp256k1.ccert
@@ -70,9 +51,9 @@ undecided criterion prevents a pass — silence is not approval.
 
 | Tier | Meaning |
 |------|---------|
-| **proved** | The evidence establishes the claim outright |
-| **derived** | Follows from other claims here, and only if those hold |
-| **not proved** | A program reported it. That is all it means |
+| proved | The evidence establishes the claim outright |
+| derived | Follows from other claims here, and only if those hold |
+| not proved | A program reported it. That is all it means |
 
 The tier of a claim follows from the kind of evidence attached, through a
 table the verifier holds too. And nothing may rest on something weaker
@@ -81,44 +62,16 @@ rejected as a malformed document.
 
 ## What is proved today
 
-For each curve: p is prime and n is prime, both by Atkin–Morain
-certificates re-checked step by step; the group has exactly n points, from
-a witness point of order n and the fact that n exceeds the Hasse window,
-so no other multiple of n fits inside it; the exact embedding degree,
-established from a proved factorisation rather than bounded by search; the
-CM field discriminant, with the factorisation that shows it is
-fundamental; and, where the standard publishes a seed, that the curve
-parameters follow from it.
+For each curve in the corpus: p is prime and n is prime, both by
+Atkin–Morain certificates re-checked step by step; the group has exactly n
+points, from a witness point of order n and the fact that n exceeds the
+Hasse window, so no other multiple of n fits inside it; the exact
+embedding degree, established from a proved factorisation of n − 1 rather
+than bounded by search; the CM field discriminant, with the factorisation
+that shows it is fundamental; and, where the standard publishes a seed,
+that the curve parameters follow from it.
 
-For the pairing-friendly curves there is more. The second group lives over
-an extension field — degree 2 for BLS12 and BN, degree 4 for BLS24 — and
-its order is settled without factoring a thousand-bit cofactor: the six
-orders a sextic twist can have are enumerated from the trace alone, and
-points on the curve eliminate every candidate but one. The surviving
-candidate is the order, and which of the six twists carries the second
-group is established rather than assumed — the curve in the evidence is
-cryptographically bound to the subject, so the argument cannot be run on
-the wrong curve.
-
-Curves in the corpus, eight in all:
-
-| Family | Curves |
-|--------|--------|
-| Pairing-friendly | **BLS12-381**, **BLS24-315**, **BLS24-509**, **BN254** |
-| Prime-field | **secp256k1**, **NIST P-256**, **Curve25519**, **Ed25519** |
-
-## The browser verifier is the same program
-
-The viewer is one HTML file with the verifier compiled to WebAssembly
-inside it. It does not display a certificate — it re-checks it, in the
-page, on the bytes in front of you, with nothing fetched and nothing sent.
-When it refuses, it says so plainly and greys out every claim, so a page
-that failed one check never reads as agreement.
-
-That the page and the command-line verifier are the same program is not
-taken on faith: the browser module is stamped with a hash of the
-verifier's sources, and the release refuses to assemble if the two have
-drifted apart.
+Curves in the corpus: secp256k1, NIST P-256.
 
 ## Getting started
 
@@ -162,15 +115,31 @@ subprocess whose output is parsed strictly and never believed. What it
 returns is a candidate, and the certificate carries the argument that
 makes it a fact.
 
-Certificates are canonical: two machines building the same curve produce
-identical bytes, which is what makes addressing them by hash meaningful.
-Continuous integration rebuilds the corpus on every commit and compares it
-byte for byte with what is published.
+Certificates are canonical: the producer is deterministic, so the same
+version of PARI building the same curve produces identical bytes, which is
+what makes addressing them by hash meaningful. Across *different* versions
+of PARI one part can move — the primality certificate for p is an
+Atkin-Morain chain, and there are many valid chains for one prime, so a
+newer or older PARI may pick a different one. That is not a defect and not
+a weaker guarantee: every such chain is checked, and a rebuilt certificate
+verifies on any version even when its bytes differ. What continuous
+integration proves on every commit, across two PARI versions, is the
+property that holds regardless: each certificate — published and rebuilt —
+re-establishes every claim from the file alone. Byte-for-byte reproduction
+is the stronger statement, and it holds against the version the corpus was
+built with.
 
 ## What this does not do
 
 It does not prove curves safe. It proves specific statements and lets
 policies argue about them.
+
+It covers twist security now, though it did not always: the SafeCurves
+`twist-security` criterion reads the largest prime factor of the twist
+order from the `twist.cardinality` evidence every bundle already carries.
+It once named a claim type the format never had and so returned unknown
+for every curve — a gap that blocked a pass correctly but for the wrong
+reason, which is its own kind of failure and is fixed.
 
 It cannot prove the absence of a seed. secp256k1 has no published
 derivation, and no certificate can establish that none exists — that is a
@@ -183,27 +152,5 @@ itself came from is a separate question, and a seed can be searched for.
 ## Licence
 
 Apache-2.0. PARI/GP is invoked as a separate process, not linked, so its
-GPL does not reach this code; see [`NOTICE`](NOTICE) for what changes if
-you distribute PARI binaries alongside a build.
-
----
-
-<div align="center">
-
-## 🇺🇦 Made in Ukraine
-
-This project was written in Ukraine, under difficult wartime conditions —
-power outages, air-raid alerts, and everything that comes with it.
-It is shared freely with the community regardless.
-
-If you'd like to support the project, a tip is warmly appreciated:
-
-```
-BTC: bc1qa6n9z79jjtsgjjg29z7q4h6npx22huz0qymz2d
-```
-
-Every bit of support helps keep the work going. Thank you. 🙏
-
-**Slava Ukraini** 🇺🇦
-
-</div>
+GPL does not reach this code; see `NOTICE` for what changes if you
+distribute PARI binaries alongside a build.

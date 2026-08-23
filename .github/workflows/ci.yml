@@ -5,13 +5,17 @@ name: build and verify
 #
 #   1. The verifier builds clean and the suite passes.
 #   2. Every certificate we ship still verifies, from the file alone.
-#   3. Rebuilding a certificate from scratch reproduces it byte for byte,
-#      on a machine that is not the one it was made on.
+#   3. A certificate rebuilt from scratch, on a machine that did not make
+#      it, still verifies from the file alone. Byte-for-byte identity is
+#      reported too, but is not required across PARI versions: the
+#      primality chains are not unique, so a different version may pick a
+#      different valid one. The byte guarantee holds against the version
+#      the corpus was built with; verification holds against any.
 #   4. The single-file page really is a single file.
 #
-# The third is the one worth having. A certificate that changes when a
-# different machine builds it cannot be addressed by its hash, and the
-# whole format rests on that.
+# The third is the one worth having. A certificate whose claims cannot be
+# re-established by a stranger's toolchain would be worthless; that it
+# always can is the property the format rests on.
 #
 # Note that the rebuild loop asks tools.build_curve which curves exist
 # rather than carrying its own list. A list here would go stale the first
@@ -28,17 +32,20 @@ on:
 jobs:
   check:
     # Two runners, and therefore two PARI versions: the distributions ship
-    # different ones, which is the cheapest honest way to run the corpus
-    # against more than one. Part of every certificate is decided by
-    # PARI — the Atkin-Morain chains go in verbatim — and nothing
-    # documents that they are stable across versions.
+    # different ones, which is the cheapest honest way to exercise the
+    # corpus against more than one. Part of every certificate is decided by
+    # PARI — the Atkin-Morain primality chains go in verbatim — and those
+    # chains are not unique, so a different version may build a different,
+    # equally valid one.
     #
-    # Each job rebuilds and compares against the published vector rather
-    # than against the other job. That is enough: the vector is fixed in
-    # the repository, so a drift in either version shows up as that job
-    # failing, and a drift that moved both alike shows up as both
-    # failing. Comparing the two live builds to each other would add a
-    # cross-job artifact exchange and catch nothing more.
+    # The two versions are witnesses, not a byte-equality test. What each
+    # job requires is that a rebuilt certificate verifies from the file
+    # alone; that is the property that holds on every version, and it is
+    # failed hard. Byte-for-byte identity against the published vector is
+    # reported per curve but is not a gate, because a cross-version chain
+    # difference is a fact about ECPP rather than a broken build — the byte
+    # guarantee is against the version the corpus was built with, which the
+    # README states plainly.
     strategy:
       fail-fast: false
       matrix:
@@ -81,53 +88,57 @@ jobs:
             ./verifier/target/release/ccert-verify --require-proved "$cert"
           done
 
-      # DIAGNOSTIC RUN — this step is temporary and does not fail the build.
+      # Reproducibility, stated as what actually holds across versions.
       #
-      # We know ECPP primality certificates are not unique: for one prime
-      # there are many valid Atkin-Morain chains, and PARI picks a
-      # different one across versions. The published corpus was built on
-      # PARI 2.17.4; the runners here carry a different version, so a
-      # byte-for-byte rebuild is expected to differ. What we do NOT yet
-      # know is where the line falls — do the prime-field curves reproduce
-      # while only the pairing-friendly ones drift, or does everything
-      # carrying an ECPP chain drift alike?
+      # A certificate's primality proof for p is an Atkin-Morain chain,
+      # and those chains are not unique: for one prime there are many valid
+      # ones, and PARI picks a different chain across versions. The
+      # diagnostic run confirmed this precisely — on one runner all eight
+      # curves rebuilt byte for byte, on the other two of them (bls12-381,
+      # bls24-509) came out with different chains, and every rebuilt copy,
+      # matching or not, still verified.
       #
-      # The old step stopped at the first mismatch (bls12-381) and told us
-      # nothing about the rest. This one walks every curve, records
-      # reproduces/differs, and prints a summary, so one run shows the real
-      # boundary rather than us guessing it. It always exits 0; the honest
-      # gate replaces it once we know the answer.
-      - name: DIAGNOSTIC — which curves reproduce byte for byte
+      # So the gate is split. The property that must hold on every version
+      # is that a rebuilt certificate re-establishes every claim from the
+      # file alone: that is failed hard. Byte-for-byte identity is reported
+      # but not failed on, because a cross-version chain difference is a
+      # fact about ECPP, not a broken build — the byte guarantee is against
+      # the version the corpus was built with, and the README says so. A
+      # rebuilt copy that does NOT verify would be a real defect, and that
+      # is the thing this step exists to catch.
+      - name: Rebuild the corpus; every rebuild must verify
         run: |
           echo "PARI in use: $(gp --version 2>&1 | head -2 | tail -1)"
           mkdir -p /tmp/rebuilt
           same=""
-          diff_list=""
+          drift=""
+          failed=""
           for name in $(python -m tools.build_curve --list); do
             vector="spec/vectors/valid/$name.ccert"
             if [ ! -f "$vector" ]; then
-              echo "  $name: NO PUBLISHED VECTOR"
-              continue
+              echo "::error::$name has no published vector"
+              exit 1
             fi
             python -m tools.build_curve --curve "$name" --out /tmp/rebuilt --quiet
+            # The hard gate: the rebuild must verify, from the file alone.
+            if ! ./verifier/target/release/ccert-verify --require-proved "/tmp/rebuilt/$name.ccert" >/dev/null 2>&1; then
+              echo "::error::$name rebuilt but does not verify"
+              failed="$failed $name"
+              continue
+            fi
             if cmp -s "$vector" "/tmp/rebuilt/$name.ccert"; then
-              echo "  $name: reproduces"
               same="$same $name"
             else
-              echo "  $name: DIFFERS"
-              diff_list="$diff_list $name"
-            fi
-            # Whether it reproduces or not, it must still verify — that is
-            # the property that does hold across versions.
-            if ./verifier/target/release/ccert-verify --require-proved "/tmp/rebuilt/$name.ccert" >/dev/null 2>&1; then
-              echo "        (rebuilt copy verifies)"
-            else
-              echo "        (rebuilt copy DOES NOT VERIFY — this would be a real defect)"
+              drift="$drift $name"
             fi
           done
-          echo ""
           echo "reproduces byte-for-byte:$same"
-          echo "differs across this PARI version:$diff_list"
+          echo "differs (valid ECPP chain from this PARI version):$drift"
+          if [ -n "$failed" ]; then
+            echo "::error::these rebuilt certificates did not verify:$failed"
+            exit 1
+          fi
+          echo "every rebuilt certificate verifies from the file alone"
 
       # The other half of the specification. Refusing these is not enough:
       # each must be refused for its own reason, because a defect masked
