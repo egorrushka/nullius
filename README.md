@@ -11,9 +11,11 @@
 [![curves certified](https://img.shields.io/badge/curves-8%20certified-6f9)](spec/vectors/valid)
 [![verifier](https://img.shields.io/badge/verifier-4559%20lines%20of%20Rust-c96)](verifier/src)
 
+<img src="docs/ukraine_flag.gif" width="250" alt="Ukraine">
+
 🇺🇦 &nbsp;**Made in Ukraine**
 
-<img src="docs/dossier.png" alt="A dossier for secp256k1: seven claims, six of them proved, judged by two policies that disagree" width="820">
+<img src="docs/dossier.png" alt="A dossier for BLS24-509: ten claims proved, its second group over F_p^4 settled by elimination, re-checked live in the browser" width="820">
 
 </div>
 
