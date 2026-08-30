@@ -1,43 +1,97 @@
 """Integrity check against the last agreed-good tree.
 
-Compares every source file in E:\\EK against a manifest taken from the
-last state that passed all tests. Reports four things:
+The set of files to check is whatever git tracks, minus a short EXCLUDE of
+files that cannot or should not be hash-pinned. Sourcing the set from git —
+not from a directory walk — is deliberate: an ignored or untracked file
+(vendor/, desktop.ini, a scratch note) can never silently enter the
+manifest, and a walk that drifts from the tree can never quietly pin junk.
+A file counts only once git knows about it.
+
+For every such file two hashes are compared against the manifest:
 
   DAMAGED   content differs, and not only in line endings — look here first
   EOL-ONLY  content is identical, only CRLF-vs-LF differs — usually harmless,
             but a .ccert converted to CRLF changes its digest, so it matters
             for certificates; .gitattributes is meant to prevent this
-  MISSING   the reference had it and this tree does not
-  EXTRA     this tree has a source file the reference did not
+  MISSING   the manifest had it and the working tree does not
+  EXTRA     git tracks a file the manifest did not record
 
-Why two categories instead of one CHANGED: this project already lost time
-twice to a CRLF difference reported as a change. A trust tool must not let
-a real corruption hide inside a pile of harmless newline noise.
-
-Build artefacts are ignored: verifier/target, node_modules, web/dist,
-web/src/verifier.generated.js, web/src/corpus.generated.js, release/,
-corpus/, __pycache__, Cargo.lock.
+The manifest is the REFERENCE dict below. It is regenerated, never edited by
+hand: run regen_manifest.py, which rebuilds it from this same git-tracked set
+and splices it back in. check_integrity.py excludes itself because it cannot
+hash-pin the bytes a regeneration rewrites.
 
 Run from E:\\EK:  python check_integrity.py
 """
 
 import hashlib
 import pathlib
+import subprocess
 import sys
 
-EXCLUDE_DIRS = {"target", "node_modules", "__pycache__", "dist", ".git",
-                "release", "corpus", "public", ".pytest_cache"}
-EXCLUDE_NAMES = {"verifier.generated.js", "corpus.generated.js", "Cargo.lock",
-                 "check_integrity.py"}
+# Full posix paths dropped from the tracked set. check_integrity.py rewrites
+# itself on every regeneration; verifier.generated.js is a build product.
+# Everything else git tracks is pinned — including Cargo.lock (a dependency
+# pin a trust tool should watch) and the wasm (an independent verification
+# path whose bytes matter).
+EXCLUDE = {
+    "check_integrity.py",
+    "web/src/verifier.generated.js",
+}
+
+
+def tracked_paths(root: pathlib.Path) -> list:
+    """What git tracks under root, in posix form, minus EXCLUDE."""
+    try:
+        out = subprocess.run(
+            ["git", "ls-files", "-z"],
+            cwd=str(root), capture_output=True, check=True,
+        ).stdout
+    except FileNotFoundError as e:
+        raise SystemExit("git is not on PATH; this checker needs git to "
+                         "learn which files are tracked") from e
+    except subprocess.CalledProcessError as e:
+        raise SystemExit("`git ls-files` failed; run this inside the E:\\EK "
+                         "git working tree") from e
+    paths = []
+    for chunk in out.split(b"\x00"):
+        if not chunk:
+            continue
+        rel = chunk.decode("utf-8")
+        if rel in EXCLUDE:
+            continue
+        paths.append(rel)
+    return paths
+
 
 REFERENCE = {
 ".gitattributes": {
-"norm": "ab0b381cac5ca2ab6533b11163d41a18730d3efebcdf2082238775a114683a4b",
-"raw": "ab0b381cac5ca2ab6533b11163d41a18730d3efebcdf2082238775a114683a4b"
+"norm": "a570454d535ae6b84edae2827beeec62611d86bfec271680a2c13cd00faef367",
+"raw": "a570454d535ae6b84edae2827beeec62611d86bfec271680a2c13cd00faef367"
+},
+".github/workflows/ci.yml": {
+"norm": "fe3b65fc37661d0e61e66ddd5f9371fa2226a22894703de18a0be1e828c672cc",
+"raw": "fe3b65fc37661d0e61e66ddd5f9371fa2226a22894703de18a0be1e828c672cc"
+},
+".gitignore": {
+"norm": "e735cb67160991cf44d82c18d81110fb354f79c29217eb65f714a992badd5c33",
+"raw": "e735cb67160991cf44d82c18d81110fb354f79c29217eb65f714a992badd5c33"
+},
+"CONTRIBUTING.md": {
+"norm": "af091853cccf7a058533655327b20fb7792ae88600cda79d593622cf1772c10b",
+"raw": "af091853cccf7a058533655327b20fb7792ae88600cda79d593622cf1772c10b"
+},
+"LICENSE": {
+"norm": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4",
+"raw": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4"
+},
+"NOTICE": {
+"norm": "f171ccd50ebca368f59f2e6d775b23722ffe9da6926de6dd6ae61c13407585da",
+"raw": "f171ccd50ebca368f59f2e6d775b23722ffe9da6926de6dd6ae61c13407585da"
 },
 "README.md": {
-"norm": "6c50588502689053db0f7a34d42cdf502e03fa674c2df9a6e45042d52035001c",
-"raw": "6c50588502689053db0f7a34d42cdf502e03fa674c2df9a6e45042d52035001c"
+"norm": "495fc0f2563a871cb4112c06f4929f6bffb82df045b47e952233ce3fbac3b533",
+"raw": "495fc0f2563a871cb4112c06f4929f6bffb82df045b47e952233ce3fbac3b533"
 },
 "core/__init__.py": {
 "norm": "e944dbd668ec43459f2b5f32b948d3dfae9836aa18208480e85e84bc17cb70ff",
@@ -76,8 +130,8 @@ REFERENCE = {
 "raw": "b84eed59ae8153b1511f44c28f67210ac88ae8b2d238f0b1c01bd77d877de91c"
 },
 "core/bundle/model.py": {
-"norm": "1982976edf0d213c92cd564451cd82a1f9ca7f01685993d4581d86cb7d80a319",
-"raw": "1982976edf0d213c92cd564451cd82a1f9ca7f01685993d4581d86cb7d80a319"
+"norm": "465c6b70c1bc3c7434c6b98e8ad031e7a61f4004c4998b9c0f3640a051590e95",
+"raw": "465c6b70c1bc3c7434c6b98e8ad031e7a61f4004c4998b9c0f3640a051590e95"
 },
 "core/bundle/pairing.py": {
 "norm": "c39eeb9792e501ef0222438594ee03ab204163b49dab32a1e53572a892b2b67b",
@@ -183,9 +237,25 @@ REFERENCE = {
 "norm": "7762e9dc98854d8f75f3dcb83ff62cff6deebfd1b1f2fcf35594350d7ba32469",
 "raw": "7762e9dc98854d8f75f3dcb83ff62cff6deebfd1b1f2fcf35594350d7ba32469"
 },
+"docs/dossier.png": {
+"norm": "16272d5b190d8481854afbc61d330ca2046c3d7a8179e0d15554f36175b83853",
+"raw": "c36c782fac933bda0093d0861a9a170de5d3e1d98c8ad9873e3cd1737a8d8719"
+},
+"docs/security-model.md": {
+"norm": "c81520a661c9eb71f86496f51a0110e71c099b7ceee652df78e1d03641368ae5",
+"raw": "c81520a661c9eb71f86496f51a0110e71c099b7ceee652df78e1d03641368ae5"
+},
+"docs/ukraine_flag.gif": {
+"norm": "f30211ca6b4492ee350863469bde3bf9a03cffa97f717d4f01ca0076213086da",
+"raw": "e4cab823f1eb267c11a6caca2b8322ca6ffab4b51a5adaa6106bdd83bbdc12ef"
+},
 "pyproject.toml": {
 "norm": "87a34e1d83cded838f4870528849993429ffbf390156c29df155a425dd8964c1",
 "raw": "87a34e1d83cded838f4870528849993429ffbf390156c29df155a425dd8964c1"
+},
+"regen_manifest.py": {
+"norm": "ef1989b8f9e9d3b23a4d40b8748a5382e7faf112f2192c58312cfb00cb4c5dc4",
+"raw": "ef1989b8f9e9d3b23a4d40b8748a5382e7faf112f2192c58312cfb00cb4c5dc4"
 },
 "spec/ccert-v0.md": {
 "norm": "d02705659a18f6fcc87e2e5b1a6f23bd90a8ab9e182ad688ee3a99947dc9ffb3",
@@ -195,9 +265,25 @@ REFERENCE = {
 "norm": "2be1db1e124322f27d98f0f1b48642272f49a7eaeaef0c2f2e263250c95540c2",
 "raw": "2be1db1e124322f27d98f0f1b48642272f49a7eaeaef0c2f2e263250c95540c2"
 },
+"spec/vectors/invalid/.gitkeep": {
+"norm": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+"raw": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+},
 "spec/vectors/invalid/README.md": {
-"norm": "12fa73ab30f1ba04629ec998521e7033c83a1fa4322d9c3d3d745493e444041e",
-"raw": "12fa73ab30f1ba04629ec998521e7033c83a1fa4322d9c3d3d745493e444041e"
+"norm": "8423a66a053a10c75cb5c2a0ec91a2baa74c69fe97de1a84fe07d9d6a4695f7d",
+"raw": "136f323bd40bda431769d196f6ffe781d481e0e729de4b8ef335636eef54d7b5"
+},
+"spec/vectors/invalid/asserts-with-an-unread-field.ccert": {
+"norm": "a236cec76a52058d7ee3fc954cca1ec4bf620e7cba6806979bea67212ad34b81",
+"raw": "a236cec76a52058d7ee3fc954cca1ec4bf620e7cba6806979bea67212ad34b81"
+},
+"spec/vectors/invalid/asserts-with-an-unread-field.expect": {
+"norm": "9d32044000c6d0fe5dfcba96841305c99bb19fcbfa83c2396dfe187cc09d1378",
+"raw": "9d32044000c6d0fe5dfcba96841305c99bb19fcbfa83c2396dfe187cc09d1378"
+},
+"spec/vectors/invalid/asserts-with-an-unread-field.why": {
+"norm": "e6f0ff5862b62a33ebeb9649f128d3726dd540750b0777e3e5c6589de95927ef",
+"raw": "e6f0ff5862b62a33ebeb9649f128d3726dd540750b0777e3e5c6589de95927ef"
 },
 "spec/vectors/invalid/broken-evidence-hash.ccert": {
 "norm": "7e70721604a3848d0a5142ce8dde962c4601487cea1180bf91c269f48e079850",
@@ -727,6 +813,10 @@ REFERENCE = {
 "norm": "428cbb9f24ad6a90dbb625e17d7bd86a833462ae329d544f047a3e336870f206",
 "raw": "428cbb9f24ad6a90dbb625e17d7bd86a833462ae329d544f047a3e336870f206"
 },
+"spec/vectors/valid/.gitkeep": {
+"norm": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+"raw": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+},
 "spec/vectors/valid/bls12-381.ccert": {
 "norm": "86dc97414436e88191209b97862a999e3768cc838551f7262dad0f170e8b85b0",
 "raw": "86dc97414436e88191209b97862a999e3768cc838551f7262dad0f170e8b85b0"
@@ -852,8 +942,8 @@ REFERENCE = {
 "raw": "d77e117918270cb0d0af23d0e54020def7b71304c4b929b47f583cdc50d11bea"
 },
 "tests/test_soundness.py": {
-"norm": "0c809b6f1693829c8661b7222d49329a01b9049a3fd73bacd3950d2119f906df",
-"raw": "0c809b6f1693829c8661b7222d49329a01b9049a3fd73bacd3950d2119f906df"
+"norm": "d5a2207bde0b7753f32bb2fcd7d94d308eebb59ab933570e6e34056a9500979f",
+"raw": "d5a2207bde0b7753f32bb2fcd7d94d308eebb59ab933570e6e34056a9500979f"
 },
 "tests/test_spec.py": {
 "norm": "499c0b7947a7508ce1f2248193ebca00e55c420c7ce3634c9114760c3ea21efc",
@@ -928,8 +1018,8 @@ REFERENCE = {
 "raw": "f77d7e7350acf15e7f7ee56372ddba38b7199d0451b4ec3a10e905e66ffcbfd3"
 },
 "tools/make_invalid_vectors.py": {
-"norm": "4e44d39cd4520375ec1f92f431c6239a5a1e4221ed7efb2ed8c19dc215e7f9e2",
-"raw": "4e44d39cd4520375ec1f92f431c6239a5a1e4221ed7efb2ed8c19dc215e7f9e2"
+"norm": "c27200aabc19b26eb32365eed96019587879e55d84d2ef40b895c578bb4567ac",
+"raw": "c27200aabc19b26eb32365eed96019587879e55d84d2ef40b895c578bb4567ac"
 },
 "tools/make_release.py": {
 "norm": "8216eb8ae35c5297cdb171e0ed9d6c10814f97b874164156630c43e90b2b3987",
@@ -964,8 +1054,8 @@ REFERENCE = {
 "raw": "603e69f60629fabc1d3068608d3b866dd1f23abd4fbc185c80de94507b5bc174"
 },
 "tools/wasm_stamp.py": {
-"norm": "c653fa365ad006fb8baf19e7ac546d3b48600514b569f0988e1ebb29487a5adb",
-"raw": "c653fa365ad006fb8baf19e7ac546d3b48600514b569f0988e1ebb29487a5adb"
+"norm": "169e86e4eab1fc8360e9cd0a228900ad8b78623fb63297d659151767ece1f591",
+"raw": "169e86e4eab1fc8360e9cd0a228900ad8b78623fb63297d659151767ece1f591"
 },
 "tools/web.bat": {
 "norm": "3623ce9c2f08a38d6abd54851f687655371fb46f1c53d0974a664c4d5144d9a6",
@@ -973,11 +1063,15 @@ REFERENCE = {
 },
 "tools/web_build.bat": {
 "norm": "f86fd53819f6320bb122e129a26cef8ab3508541453731e487031d378f1e3f43",
-"raw": "f86fd53819f6320bb122e129a26cef8ab3508541453731e487031d378f1e3f43"
+"raw": "157a248de52ca566b7bbecfd8a23146b9f22c13d550b3793f71bc2ccdec86d89"
 },
 "tools/web_data.bat": {
 "norm": "12ec1baa97b038f9f8a70a5017e4e5ed1393d21f62a265586e589370875e936b",
 "raw": "12ec1baa97b038f9f8a70a5017e4e5ed1393d21f62a265586e589370875e936b"
+},
+"verifier/Cargo.lock": {
+"norm": "be5739ad85c589439bea0046b0a6b110656e7e185de50aab06d67568dc69960e",
+"raw": "be5739ad85c589439bea0046b0a6b110656e7e185de50aab06d67568dc69960e"
 },
 "verifier/Cargo.toml": {
 "norm": "257d7eb510d2b861953ebe5c762b0ffecfa4dcf9118d830c531dfc3666975753",
@@ -1044,8 +1138,20 @@ REFERENCE = {
 "raw": "e60a120a36ecde24a90b597c4390ae4384532225dbadc7777229123555d74f6b"
 },
 "verifier/src/verify.rs": {
-"norm": "dd8f5bce0dee4b849e96caf58bacfe9f400c5af3d36e4953ad25d1eda146b744",
-"raw": "dd8f5bce0dee4b849e96caf58bacfe9f400c5af3d36e4953ad25d1eda146b744"
+"norm": "0ffbb001ea52e446128fc90169b954e2dfc54597fca5b7cd223158e7c9fc1d76",
+"raw": "0ffbb001ea52e446128fc90169b954e2dfc54597fca5b7cd223158e7c9fc1d76"
+},
+"verifier/tests/.gitkeep": {
+"norm": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+"raw": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+},
+"web/.gitignore": {
+"norm": "fe718e7babb14f3cbad2d97f08889b9ce5215ed3fe0e43b2b8cfbfb3b9b844e8",
+"raw": "fe718e7babb14f3cbad2d97f08889b9ce5215ed3fe0e43b2b8cfbfb3b9b844e8"
+},
+"web/.oxlintrc.json": {
+"norm": "1be899e45c49b2a2edc715bc3bfb31d8ed8e866ed7ebab2065ff6e55e88c2396",
+"raw": "1be899e45c49b2a2edc715bc3bfb31d8ed8e866ed7ebab2065ff6e55e88c2396"
 },
 "web/README.md": {
 "norm": "1f8fa46483b514305f44e34a47e85e88428c3a667c9494e1583628ef18d7bc79",
@@ -1059,13 +1165,37 @@ REFERENCE = {
 "norm": "811ca821d62ba5dc0146e8fea5178e114ef845ed9a16e8e1af47a788e3741a9e",
 "raw": "811ca821d62ba5dc0146e8fea5178e114ef845ed9a16e8e1af47a788e3741a9e"
 },
+"web/package-lock.json": {
+"norm": "4a059091b45bdd8ee967470f62a458ebad2f3ce4e4dab9907a593bc78667f881",
+"raw": "4a059091b45bdd8ee967470f62a458ebad2f3ce4e4dab9907a593bc78667f881"
+},
 "web/package.json": {
 "norm": "99230e398bf1703385ae0f39c5659b2ed7b2273e8bb64f6c9b9c564e727a10eb",
 "raw": "99230e398bf1703385ae0f39c5659b2ed7b2273e8bb64f6c9b9c564e727a10eb"
 },
+"web/public/favicon.svg": {
+"norm": "61bc9a161de58248288e6905425d7180f0624c2865007b97d763fdac12043a66",
+"raw": "61bc9a161de58248288e6905425d7180f0624c2865007b97d763fdac12043a66"
+},
+"web/public/icons.svg": {
+"norm": "b45fa506195cfcdef406ba9f0c77b36ddc1a7c224040926ec70abc2fdea7b93a",
+"raw": "b45fa506195cfcdef406ba9f0c77b36ddc1a7c224040926ec70abc2fdea7b93a"
+},
 "web/src/App.jsx": {
 "norm": "1386a982e7ed7fd314b4fac0c2bccafad5b075422c3eef7a38cc4d4c7d2734b5",
 "raw": "1386a982e7ed7fd314b4fac0c2bccafad5b075422c3eef7a38cc4d4c7d2734b5"
+},
+"web/src/assets/hero.png": {
+"norm": "cfdde5b97f7abbdde251933fda164ea3d0d920a219bf2f8c48c1e22cbf3acfe0",
+"raw": "881ffbcaafc212e49addad08846a5b82761355fa20624253af3477ba33262c5c"
+},
+"web/src/assets/react.svg": {
+"norm": "35ef61ed53b323ae94a16a8ec659b3d0af3880698791133f23b084085ab1c2e5",
+"raw": "35ef61ed53b323ae94a16a8ec659b3d0af3880698791133f23b084085ab1c2e5"
+},
+"web/src/assets/vite.svg": {
+"norm": "5be21acd42eb7b896e517f4e0f0f11eb5c5d9e54fbbcebe9453f033008fcca6f",
+"raw": "5be21acd42eb7b896e517f4e0f0f11eb5c5d9e54fbbcebe9453f033008fcca6f"
 },
 "web/src/index.css": {
 "norm": "e8199de1c8470321703ba5cbf556c0e20ebd7f54c145416c161f12baf6e1e7f5",
@@ -1086,11 +1216,23 @@ REFERENCE = {
 "web/src/verifier.placeholder.js": {
 "norm": "efc4df5424a491ce643dba4326bc89c5efdc96bb6c29216b94791e6d02412040",
 "raw": "efc4df5424a491ce643dba4326bc89c5efdc96bb6c29216b94791e6d02412040"
-}
+},
+"web/src/wasm/ccert.js": {
+"norm": "a887528c4660736edd152132b9988be55eb8b232cf2e9cad3c386cb84fd09ad6",
+"raw": "a887528c4660736edd152132b9988be55eb8b232cf2e9cad3c386cb84fd09ad6"
+},
+"web/src/wasm/ccert_bg.wasm": {
+"norm": "505c2f22536068f4bc86ffa89d2c23a4d7f407ce6609341120714cc79ec32f13",
+"raw": "5a9cfbcd7fa4d8fe0cd1e93a8fc52948f069e8b89673fa723d52a47b63ff5e42"
+},
+"web/vite.config.js": {
+"norm": "2a6c49e04bb03b211ff47c6e4db951db8cdd1c64dc2d6a1400f0b8a32507c670",
+"raw": "2a6c49e04bb03b211ff47c6e4db951db8cdd1c64dc2d6a1400f0b8a32507c670"
+},
 }
 
 
-def _hashes(data: bytes) -> tuple[str, str]:
+def _hashes(data: bytes) -> tuple:
     raw = hashlib.sha256(data).hexdigest()
     norm = hashlib.sha256(data.replace(b"\r\n", b"\n")).hexdigest()
     return raw, norm
@@ -1103,14 +1245,14 @@ def main() -> int:
         return 2
 
     present = {}
-    for f in root.rglob("*"):
-        if not f.is_file():
+    for rel in tracked_paths(root):
+        try:
+            data = (root / rel).read_bytes()
+        except FileNotFoundError:
+            # Tracked but deleted in the working tree; surfaces as MISSING
+            # below if the manifest expected it.
             continue
-        if set(f.relative_to(root).parts) & EXCLUDE_DIRS:
-            continue
-        if f.name in EXCLUDE_NAMES:
-            continue
-        present[f.relative_to(root).as_posix()] = _hashes(f.read_bytes())
+        present[rel] = _hashes(data)
 
     damaged, eol_only, missing, extra = [], [], [], []
     for rel, ref in REFERENCE.items():
@@ -1137,13 +1279,12 @@ def main() -> int:
 
     print()
     if not (damaged or missing or extra or eol_only):
-        print("clean: every source file matches the reference, byte for byte")
+        print("clean: every tracked file matches the manifest, byte for byte")
         return 0
     if not (damaged or missing or extra):
         print(f"content is intact: {len(eol_only)} file(s) differ only in line")
         print("endings (CRLF vs LF). Harmless for reading, but a .ccert in CRLF")
-        print("has a different digest — add .gitattributes to pin LF and it")
-        print("stops happening. Not a corruption.")
+        print("has a different digest — .gitattributes pins LF to stop this.")
         return 0
     print(f"summary: {len(damaged)} damaged, {len(missing)} missing, "
           f"{len(extra)} extra, {len(eol_only)} eol-only")

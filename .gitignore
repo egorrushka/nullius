@@ -24,3 +24,11 @@ release/
 web/public/data/
 web/src/corpus.generated.js
 desktop.ini
+
+# Session handoff / context docs — not part of the published tree
+docs/PROJECT_CONTEXT.md
+docs/SPEC_v0.3.0.md
+docs/удалить перед публикацией/
+
+# One-shot maintenance script; run once then delete
+normalize_eol.py

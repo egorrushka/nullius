@@ -5,21 +5,24 @@
 # therefore the digest, so a repository cloned on a machine with autocrlf
 # on would present certificates whose digests no longer match the files
 # beside them — a failure that looks like tampering and is only a newline.
-# The same reasoning covers the negative vectors, whose .expect files are
-# matched as substrings, and the wasm base64 the page is checked against.
 #
 # So: every text file in this tree is LF, on every platform, regardless of
 # a contributor's git config. `text=auto eol=lf` normalises on commit and
-# checks out LF; the explicit `-text` on the artefacts and certificates
-# forbids any conversion at all, which is the stronger guarantee where a
-# byte matters.
+# checks out LF. The certificates go further with `-text`, which forbids any
+# conversion at all — the stronger guarantee where every byte is identity.
 
 * text=auto eol=lf
 
-# Certificates and their expectations: byte-exact, never converted.
+# Certificates: byte-exact, never converted. The sha256 is the identity.
 *.ccert   -text
-*.expect  -text
-*.why     -text
+
+# Negative-vector expectations and notes are LF text. They were once `-text`
+# too, which protected their bytes but also let a CRLF, once committed, stay
+# committed — the drift could not heal. `text eol=lf` normalises them on the
+# way in, so the canonical LF repairs itself. Their bytes are not an identity
+# the way a .ccert's are; the .expect substring match tolerates the newline.
+*.expect  text eol=lf
+*.why     text eol=lf
 
 # Source that the verifier or producer hashes or emits verbatim.
 *.rs      text eol=lf
