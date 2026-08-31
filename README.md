@@ -44,6 +44,8 @@ has had no external audit, and the corpus is a demonstration set rather
 than exhaustive coverage. Read it as "here is a way to make curve
 parameters verifiable; look, and tell me where it is wrong."
 
+**Where the line is.** Before arguing with the design, see [`docs/security-model.md`](docs/security-model.md): the trust boundary, the guarantees, and the non-goals, each tied to the code that enforces it.
+
 ---
 
 Claims about elliptic curves normally arrive as tables. This curve has
