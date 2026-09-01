@@ -1,0 +1,72 @@
+name: fuzz
+
+# libFuzzer runs on Linux only, so the fuzzing itself lives here. The
+# same invariants run on every platform as an ordinary `cargo test`
+# (tests/fuzz_oracle.rs); this workflow is where the millions of
+# mutations happen and the runtime accrues.
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  schedule:
+    # A longer run every night, so coverage deepens without waiting on a push.
+    - cron: "0 3 * * *"
+
+permissions:
+  contents: read
+
+jobs:
+  # The cross-platform invariant net: fast, no sanitizer, proves the oracle
+  # holds over the whole shipped corpus. This is the gate a PR must pass.
+  corpus:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+      - name: oracle over the corpus
+        working-directory: verifier
+        run: cargo test --release --test fuzz_oracle
+
+  # The fuzzer proper: libFuzzer via cargo-fuzz, seeded from the corpus.
+  # A short run on push and PR; a long run on the nightly schedule.
+  fuzz:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@nightly
+      - name: install cargo-fuzz
+        run: cargo install cargo-fuzz --locked
+      - name: seed the corpus from the shipped vectors
+        working-directory: verifier
+        run: |
+          mkdir -p fuzz/corpus/verify_text fuzz/corpus/parse
+          cp ../spec/vectors/valid/*.ccert   fuzz/corpus/verify_text/ || true
+          cp ../spec/vectors/invalid/*.ccert fuzz/corpus/verify_text/ || true
+          cp fuzz/corpus/verify_text/*.ccert fuzz/corpus/parse/       || true
+      - name: set run length
+        id: len
+        run: |
+          if [ "${{ github.event_name }}" = "schedule" ]; then
+            echo "seconds=1800" >> "$GITHUB_OUTPUT"
+          else
+            echo "seconds=120" >> "$GITHUB_OUTPUT"
+          fi
+      - name: fuzz verify_text
+        working-directory: verifier
+        run: >
+          cargo fuzz run verify_text --
+          -max_total_time=${{ steps.len.outputs.seconds }}
+          -max_len=65536 -rss_limit_mb=2048 -timeout=25
+      - name: fuzz parse
+        working-directory: verifier
+        run: >
+          cargo fuzz run parse --
+          -max_total_time=${{ steps.len.outputs.seconds }}
+          -max_len=65536 -rss_limit_mb=2048 -timeout=25
+      - name: keep any crash for triage
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: fuzz-artifacts
+          path: verifier/fuzz/artifacts/

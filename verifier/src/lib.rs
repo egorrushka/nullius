@@ -28,6 +28,7 @@ pub mod json;
 pub mod point_order;
 pub mod twist_class;
 pub mod verify;
+pub mod fuzz_oracle;
 
 use verify::Tier;
 

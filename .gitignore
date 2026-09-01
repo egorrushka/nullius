@@ -32,3 +32,10 @@ docs/удалить перед публикацией/
 
 # One-shot maintenance script; run once then delete
 normalize_eol.py
+
+# cargo-fuzz build output and derived corpus (seeded from spec/vectors in CI)
+verifier/fuzz/target/
+verifier/fuzz/corpus/
+verifier/fuzz/artifacts/
+verifier/fuzz/coverage/
+verifier/fuzz/Cargo.lock

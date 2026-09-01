@@ -73,9 +73,13 @@ REFERENCE = {
 "norm": "fe3b65fc37661d0e61e66ddd5f9371fa2226a22894703de18a0be1e828c672cc",
 "raw": "fe3b65fc37661d0e61e66ddd5f9371fa2226a22894703de18a0be1e828c672cc"
 },
+".github/workflows/fuzz.yml": {
+"norm": "c52c44593b5b53b2893e43a1dc14c8c963f668bfb1da302237282be6baa727e6",
+"raw": "c52c44593b5b53b2893e43a1dc14c8c963f668bfb1da302237282be6baa727e6"
+},
 ".gitignore": {
-"norm": "e735cb67160991cf44d82c18d81110fb354f79c29217eb65f714a992badd5c33",
-"raw": "e735cb67160991cf44d82c18d81110fb354f79c29217eb65f714a992badd5c33"
+"norm": "a6eb33b6ddb1bef5f7f54bd5692c2eece9958f512a69b6cdb078ffcd82ebc617",
+"raw": "a6eb33b6ddb1bef5f7f54bd5692c2eece9958f512a69b6cdb078ffcd82ebc617"
 },
 "CONTRIBUTING.md": {
 "norm": "af091853cccf7a058533655327b20fb7792ae88600cda79d593622cf1772c10b",
@@ -1081,6 +1085,18 @@ REFERENCE = {
 "norm": "0e991f94495a82067da745b38d9aa2ddadcffab8763ad8db40998aa3cbeda5cc",
 "raw": "0e991f94495a82067da745b38d9aa2ddadcffab8763ad8db40998aa3cbeda5cc"
 },
+"verifier/fuzz/Cargo.toml": {
+"norm": "6da6e9beed5f5d0c3fb01b7d4c9be1b4092d9ecc9e7e2b9c9684a419313dc096",
+"raw": "6da6e9beed5f5d0c3fb01b7d4c9be1b4092d9ecc9e7e2b9c9684a419313dc096"
+},
+"verifier/fuzz/fuzz_targets/parse.rs": {
+"norm": "867d6324672df1281a192c5175d1c6274fa0f9d145c89e82f629c5315f929bad",
+"raw": "867d6324672df1281a192c5175d1c6274fa0f9d145c89e82f629c5315f929bad"
+},
+"verifier/fuzz/fuzz_targets/verify_text.rs": {
+"norm": "bb9809e9de26fa49e3715ccb49f0ff8fa4d9dbfd29c45d872b50a6e289180833",
+"raw": "bb9809e9de26fa49e3715ccb49f0ff8fa4d9dbfd29c45d872b50a6e289180833"
+},
 "verifier/src/claims.rs": {
 "norm": "4accb180843f4a50532a8f9d20d1300aaad87fb75aef2d4162c2d448c61d1e23",
 "raw": "4accb180843f4a50532a8f9d20d1300aaad87fb75aef2d4162c2d448c61d1e23"
@@ -1117,13 +1133,17 @@ REFERENCE = {
 "norm": "a33f60fdec9c87c799fc9947e68114a65d1573609e613f5ef13536e7f7625cd7",
 "raw": "a33f60fdec9c87c799fc9947e68114a65d1573609e613f5ef13536e7f7625cd7"
 },
+"verifier/src/fuzz_oracle.rs": {
+"norm": "9b9f75b3e676dbf438ce3b5a3ce33c3844c612b227139b13ae6fa305546fecbb",
+"raw": "9b9f75b3e676dbf438ce3b5a3ce33c3844c612b227139b13ae6fa305546fecbb"
+},
 "verifier/src/json.rs": {
 "norm": "74f153d8d0e6d5d1a03dbd43b5983e1479a3711e9cb9be7fb518a1d2343e57c5",
 "raw": "74f153d8d0e6d5d1a03dbd43b5983e1479a3711e9cb9be7fb518a1d2343e57c5"
 },
 "verifier/src/lib.rs": {
-"norm": "04040a72e9d8bc1112b76a44dcd29c8fa1068984a68c84e9ec7a9e5dc4bee576",
-"raw": "04040a72e9d8bc1112b76a44dcd29c8fa1068984a68c84e9ec7a9e5dc4bee576"
+"norm": "794a44672539cc0060356455e993155448f4aff9e3577b98061ba9b4ea8767ba",
+"raw": "794a44672539cc0060356455e993155448f4aff9e3577b98061ba9b4ea8767ba"
 },
 "verifier/src/main.rs": {
 "norm": "25487dfd3f1bd483ad448fb05a4809a4faf223304c49bc960487ea3c92c86dfa",
@@ -1144,6 +1164,10 @@ REFERENCE = {
 "verifier/tests/.gitkeep": {
 "norm": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
 "raw": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+},
+"verifier/tests/fuzz_oracle.rs": {
+"norm": "30f4606b0161fdcab3c61d142e6bad481139d71d2269fa5f7282292b174b392a",
+"raw": "30f4606b0161fdcab3c61d142e6bad481139d71d2269fa5f7282292b174b392a"
 },
 "web/.gitignore": {
 "norm": "fe718e7babb14f3cbad2d97f08889b9ce5215ed3fe0e43b2b8cfbfb3b9b844e8",
