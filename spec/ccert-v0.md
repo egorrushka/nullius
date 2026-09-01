@@ -28,6 +28,11 @@ points at the evidence needed to re-check it.
 
 The digest of a bundle is the SHA-256 of its canonical encoding.
 
+These rules are the summary. `canonical-encoding.md` states each of them
+normatively, with the exact refusal a reader emits when it is broken and
+the negative vector that pins it — the form a second implementation needs
+to match this one byte for byte.
+
 ## Structure
 
 ```

@@ -246,8 +246,8 @@ REFERENCE = {
 "raw": "c36c782fac933bda0093d0861a9a170de5d3e1d98c8ad9873e3cd1737a8d8719"
 },
 "docs/security-model.md": {
-"norm": "c81520a661c9eb71f86496f51a0110e71c099b7ceee652df78e1d03641368ae5",
-"raw": "c81520a661c9eb71f86496f51a0110e71c099b7ceee652df78e1d03641368ae5"
+"norm": "c64df96672caabfbdc52b4670ccbabaa393602a74d068e838d0e1954b4ad0bf2",
+"raw": "c64df96672caabfbdc52b4670ccbabaa393602a74d068e838d0e1954b4ad0bf2"
 },
 "docs/ukraine_flag.gif": {
 "norm": "f30211ca6b4492ee350863469bde3bf9a03cffa97f717d4f01ca0076213086da",
@@ -266,8 +266,8 @@ REFERENCE = {
 "raw": "9516387c64581d1893db919c4d6ad25e56fdc0265195d91b4c28a27d44926eb8"
 },
 "spec/ccert-v0.md": {
-"norm": "d02705659a18f6fcc87e2e5b1a6f23bd90a8ab9e182ad688ee3a99947dc9ffb3",
-"raw": "d02705659a18f6fcc87e2e5b1a6f23bd90a8ab9e182ad688ee3a99947dc9ffb3"
+"norm": "cc2f2c87955c76bfd5306f522230dbfc86b9aee1473c2ca9556f91e97f168c2f",
+"raw": "cc2f2c87955c76bfd5306f522230dbfc86b9aee1473c2ca9556f91e97f168c2f"
 },
 "spec/claims/README.md": {
 "norm": "2be1db1e124322f27d98f0f1b48642272f49a7eaeaef0c2f2e263250c95540c2",

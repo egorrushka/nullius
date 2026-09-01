@@ -190,6 +190,8 @@ between the project's own writer and reader cannot hide. The rules are in
 top-level keys are not sorted, refused with "out of order" — with
 `trailing-bytes` and `whitespace` covering framing and exactness.
 
+The rules are enumerated normatively in `canonical-encoding.md`, each with its refusal substring and vector.
+
 ## Reproducibility is not a security property here
 
 Two runs of the producer on different PARI versions can emit byte-different
