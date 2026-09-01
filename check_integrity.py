@@ -1074,12 +1074,12 @@ REFERENCE = {
 "raw": "12ec1baa97b038f9f8a70a5017e4e5ed1393d21f62a265586e589370875e936b"
 },
 "verifier/Cargo.lock": {
-"norm": "be5739ad85c589439bea0046b0a6b110656e7e185de50aab06d67568dc69960e",
-"raw": "be5739ad85c589439bea0046b0a6b110656e7e185de50aab06d67568dc69960e"
+"norm": "54b7b314446cdd8c0087f1a3ddeca496349a1edb73bd9de8219b1da7c26b1da3",
+"raw": "54b7b314446cdd8c0087f1a3ddeca496349a1edb73bd9de8219b1da7c26b1da3"
 },
 "verifier/Cargo.toml": {
-"norm": "257d7eb510d2b861953ebe5c762b0ffecfa4dcf9118d830c531dfc3666975753",
-"raw": "257d7eb510d2b861953ebe5c762b0ffecfa4dcf9118d830c531dfc3666975753"
+"norm": "9138aa64de6cc67e6e95c0c2736092edfb734a82aed87eead1e8c64ff9b5fc60",
+"raw": "9138aa64de6cc67e6e95c0c2736092edfb734a82aed87eead1e8c64ff9b5fc60"
 },
 "verifier/README.md": {
 "norm": "0e991f94495a82067da745b38d9aa2ddadcffab8763ad8db40998aa3cbeda5cc",
@@ -1168,6 +1168,10 @@ REFERENCE = {
 "verifier/tests/fuzz_oracle.rs": {
 "norm": "30f4606b0161fdcab3c61d142e6bad481139d71d2269fa5f7282292b174b392a",
 "raw": "30f4606b0161fdcab3c61d142e6bad481139d71d2269fa5f7282292b174b392a"
+},
+"verifier/tests/proptest_laws.rs": {
+"norm": "e6c0095cff6e053f6b82bc74942c87be72cae960e70ecb2694e6d66a552d1414",
+"raw": "e6c0095cff6e053f6b82bc74942c87be72cae960e70ecb2694e6d66a552d1414"
 },
 "web/.gitignore": {
 "norm": "fe718e7babb14f3cbad2d97f08889b9ce5215ed3fe0e43b2b8cfbfb3b9b844e8",
