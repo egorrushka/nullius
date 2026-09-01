@@ -1,0 +1,1 @@
+An object key containing a byte outside the permitted [A-Za-z0-9._:-] set.

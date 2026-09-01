@@ -732,6 +732,55 @@ def trailing_bytes(raw: bytes) -> bytes:
     return raw + b"\n"
 
 
+
+def byte_order_mark(raw: bytes) -> bytes:
+    """A leading UTF-8 byte-order mark, which canonical form forbids rather than strips."""
+    assert not raw.startswith(b"\xef\xbb\xbf")
+    return b"\xef\xbb\xbf" + raw
+
+
+def json_number(raw: bytes) -> bytes:
+    """A quantity written as a bare JSON number instead of a decimal string."""
+    assert b'"cofactor":"1"' in raw
+    return raw.replace(b'"cofactor":"1"', b'"cofactor":1', 1)
+
+
+def forbidden_key_byte(raw: bytes) -> bytes:
+    """An object key containing a byte outside the permitted [A-Za-z0-9._:-] set."""
+    assert b'"type":' in raw
+    return raw.replace(b'"type":', b'"typ!":', 1)
+
+
+def empty_key(raw: bytes) -> bytes:
+    """An object with an empty key, which has no canonical spelling."""
+    assert raw[:1] == b"{"
+    return b'{"":"x",' + raw[1:]
+
+
+def escaped_solidus(raw: bytes) -> bytes:
+    r"""A solidus escaped as \/ , which is not minimal escaping."""
+    assert b'"proved"' in raw
+    return raw.replace(b'"proved"', b'"pro\\/ved"', 1)
+
+
+def non_minimal_unicode_escape(raw: bytes) -> bytes:
+    r"""A printable character written as \u0041 instead of literally."""
+    assert b'"proved"' in raw
+    return raw.replace(b'"proved"', b'"pro\\u0041ved"', 1)
+
+
+def raw_control_byte(raw: bytes) -> bytes:
+    """A raw control byte inside a string, which must be escaped."""
+    assert b'"proved"' in raw
+    return raw.replace(b'"proved"', b'"pro\x01ved"', 1)
+
+
+def unknown_escape(raw: bytes) -> bytes:
+    r"""An unrecognised backslash escape in a string."""
+    assert b'"proved"' in raw
+    return raw.replace(b'"proved"', b'"pro\\qved"', 1)
+
+
 MUTATIONS: dict[str, tuple[str, object, str]] = {
     # name: (source curve, mutation, expected substring of the refusal)
     "foreign-curve": ("bn254", foreign_curve, "different curve"),
@@ -837,6 +886,14 @@ MUTATIONS: dict[str, tuple[str, object, str]] = {
     "whitespace": ("secp256k1", whitespace, "offset"),
     "reordered-keys": ("secp256k1", reordered_keys, "out of order"),
     "trailing-bytes": ("secp256k1", trailing_bytes, "trailing"),
+    "byte-order-mark": ("secp256k1", byte_order_mark, "byte order mark"),
+    "json-number": ("secp256k1", json_number, "numbers are not allowed"),
+    "forbidden-key-byte": ("secp256k1", forbidden_key_byte, "a byte outside"),
+    "empty-key": ("secp256k1", empty_key, "empty object key"),
+    "escaped-solidus": ("secp256k1", escaped_solidus, "not minimal escaping"),
+    "non-minimal-unicode-escape": ("secp256k1", non_minimal_unicode_escape, "non-minimal escape"),
+    "raw-control-byte": ("secp256k1", raw_control_byte, "raw control byte"),
+    "unknown-escape": ("secp256k1", unknown_escape, "unknown escape"),
 }
 
 
@@ -883,7 +940,7 @@ def _readme(out: Path) -> None:
         if body:
             lines += ["", body]
     lines.append("")
-    (out / "README.md").write_text("\n".join(lines), encoding="utf-8")
+    (out / "README.md").write_text("\n".join(lines) + "\n", encoding="utf-8", newline="\n")
 
 
 def build_all(out: Path = INVALID) -> list[Path]:
@@ -905,9 +962,9 @@ def build_all(out: Path = INVALID) -> list[Path]:
 
         path = out / f"{name}.ccert"
         path.write_bytes(produced)
-        (out / f"{name}.expect").write_text(expected + "\n", encoding="utf-8")
+        (out / f"{name}.expect").write_text(expected + "\n", encoding="utf-8", newline="\n")
         (out / f"{name}.why").write_text(
-            (mutate.__doc__ or "").strip() + "\n", encoding="utf-8"
+            (mutate.__doc__ or "").strip() + "\n", encoding="utf-8", newline="\n"
         )
         written.append(path)
     _readme(out)

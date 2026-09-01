@@ -25,6 +25,7 @@ python -m tools.make_invalid_vectors --check
 | --- | --- | --- |
 | `asserts-with-an-unread-field` | bls24-509 | unknown field `security_level` |
 | `broken-evidence-hash` | bn254 | hash |
+| `byte-order-mark` | secp256k1 | byte order mark |
 | `candidate-source` | bls12-381 | candidate |
 | `chain-for-another-number` | p-256 | chain |
 | `chain-step-with-an-unread-field` | secp256k1 | unknown field `comment` |
@@ -35,14 +36,20 @@ python -m tools.make_invalid_vectors --check
 | `elimination-useless-point` | bn254 | eliminates nothing |
 | `elimination-without-points` | bn254 | no points are offered |
 | `elimination-wrong-survivor` | bn254 | not the order asserted |
+| `empty-key` | secp256k1 | empty object key |
+| `escaped-solidus` | secp256k1 | not minimal escaping |
 | `evidence-with-an-unread-field` | secp256k1 | unknown field `shortcut` |
 | `factor-entry-with-an-unread-field` | bls12-381 | unknown field `note` |
+| `forbidden-key-byte` | secp256k1 | a byte outside |
 | `foreign-curve` | bn254 | different curve |
 | `giant-exponent` | bls12-381 | exceeds |
+| `json-number` | secp256k1 | numbers are not allowed |
 | `mismatched-cofactor` | bls12-381 | multiply |
+| `non-minimal-unicode-escape` | secp256k1 | non-minimal escape |
 | `order-unique-composite-n` | curve25519 | is not the subgroup order proved prime |
 | `overstated-largest-factor` | bls12-381 | largest |
 | `overstated-two-adicity` | bls12-381 | two-adicity |
+| `raw-control-byte` | secp256k1 | raw control byte |
 | `reordered-keys` | secp256k1 | out of order |
 | `singular-montgomery` | curve25519 | singular |
 | `square-beta` | bls12-381 | square |
@@ -54,6 +61,7 @@ python -m tools.make_invalid_vectors --check
 | `undeclared-dependency` | bn254 | must declare |
 | `undersized-witness` | curve25519 | multiples |
 | `unfactored-cofactor-with-a-claim` | bls24-315 | no factorisation |
+| `unknown-escape` | secp256k1 | unknown escape |
 | `unknown-family` | bn254 | unknown family |
 | `unknown-model` | curve25519 | unknown curve model |
 | `unproved-characteristic` | bn254 | candidate |
@@ -79,6 +87,10 @@ A claim wearing a false attribute inside its own `asserts`.
 ### `broken-evidence-hash`
 
 Evidence edited without re-addressing it.
+
+### `byte-order-mark`
+
+A leading UTF-8 byte-order mark, which canonical form forbids rather than strips.
 
 ### `candidate-source`
 
@@ -134,6 +146,14 @@ A group order annihilates every point, so the candidates are narrowed by points 
 
 An order that is not the candidate the points left standing.
 
+### `empty-key`
+
+An object with an empty key, which has no canonical spelling.
+
+### `escaped-solidus`
+
+A solidus escaped as \/ , which is not minimal escaping.
+
 ### `evidence-with-an-unread-field`
 
 Padding inside the evidence itself.
@@ -145,6 +165,10 @@ The same defect as an elimination point that rules nothing out, which this forma
 Padding inside a factorisation, where a policy reads its numbers.
 
 The largest prime factor of a cofactor is what a subgroup-security criterion decides on. An entry carrying anything beyond its prime, exponent and chain is an entry making a claim outside the format.
+
+### `forbidden-key-byte`
+
+An object key containing a byte outside the permitted [A-Za-z0-9._:-] set.
 
 ### `foreign-curve`
 
@@ -158,9 +182,17 @@ An exponent whose power would cost hundreds of megabytes.
 
 Well formed, and refused on the size of the entry rather than after computing it.
 
+### `json-number`
+
+A quantity written as a bare JSON number instead of a decimal string.
+
 ### `mismatched-cofactor`
 
 A split whose parts do not multiply back to the group order.
+
+### `non-minimal-unicode-escape`
+
+A printable character written as \u0041 instead of literally.
 
 ### `order-unique-composite-n`
 
@@ -179,6 +211,10 @@ Subgroup-security policies read this number, so an unchecked claim about it woul
 A two-adicity larger than the exponent of two in r - 1.
 
 A SNARK policy reads this number to decide how large a proving domain the curve admits, so an unchecked assertion about it would let a curve look more capable than it is. The verifier recomputes it from the factorisation it has already proved complete.
+
+### `raw-control-byte`
+
+A raw control byte inside a string, which must be escaped.
 
 ### `reordered-keys`
 
@@ -237,6 +273,10 @@ Everything here is true: the point is on the curve, its order is exactly what th
 A largest prime factor asserted where nothing was factored.
 
 The cofactor factorisation is optional — BLS24-315's is a 983-bit composite and will not be produced — but an assertion about it without one reads as established and is not.
+
+### `unknown-escape`
+
+An unrecognised backslash escape in a string.
 
 ### `unknown-family`
 
@@ -313,3 +353,4 @@ A twist class index that is one of the six, but not the right one.
 A v that does not satisfy 4q = t2^2 + 3v^2.
 
 The verifier recomputes it rather than taking it, so the number in the evidence is a convenience for a reader and not a source of truth.
+

@@ -238,8 +238,8 @@ REFERENCE = {
 "raw": "f180e3bdac998fc2ec85ff6b23c37597c9be3322bb71bbe6022d272807b767b2"
 },
 "docs/ROADMAP.md": {
-"norm": "5fc2fd4f6df6277ebb99c0d2561a86a2127b103a4f66712dad546ca09791871d",
-"raw": "5fc2fd4f6df6277ebb99c0d2561a86a2127b103a4f66712dad546ca09791871d"
+"norm": "2398745db9958d0433b627599f4852e33370414a665f4199beed94814c768d00",
+"raw": "2398745db9958d0433b627599f4852e33370414a665f4199beed94814c768d00"
 },
 "docs/dossier.png": {
 "norm": "16272d5b190d8481854afbc61d330ca2046c3d7a8179e0d15554f36175b83853",
@@ -262,8 +262,8 @@ REFERENCE = {
 "raw": "ef1989b8f9e9d3b23a4d40b8748a5382e7faf112f2192c58312cfb00cb4c5dc4"
 },
 "spec/canonical-encoding.md": {
-"norm": "51be26d64ca49ab329c6d1d042320efd1778f54ada710a73fd5679fe6db08e3b",
-"raw": "51be26d64ca49ab329c6d1d042320efd1778f54ada710a73fd5679fe6db08e3b"
+"norm": "9516387c64581d1893db919c4d6ad25e56fdc0265195d91b4c28a27d44926eb8",
+"raw": "9516387c64581d1893db919c4d6ad25e56fdc0265195d91b4c28a27d44926eb8"
 },
 "spec/ccert-v0.md": {
 "norm": "d02705659a18f6fcc87e2e5b1a6f23bd90a8ab9e182ad688ee3a99947dc9ffb3",
@@ -278,8 +278,8 @@ REFERENCE = {
 "raw": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
 },
 "spec/vectors/invalid/README.md": {
-"norm": "8423a66a053a10c75cb5c2a0ec91a2baa74c69fe97de1a84fe07d9d6a4695f7d",
-"raw": "136f323bd40bda431769d196f6ffe781d481e0e729de4b8ef335636eef54d7b5"
+"norm": "f454929a5bbb048199539c7c4fb946f1464e430c34deee99919f80aa960b3d92",
+"raw": "f454929a5bbb048199539c7c4fb946f1464e430c34deee99919f80aa960b3d92"
 },
 "spec/vectors/invalid/asserts-with-an-unread-field.ccert": {
 "norm": "a236cec76a52058d7ee3fc954cca1ec4bf620e7cba6806979bea67212ad34b81",
@@ -304,6 +304,18 @@ REFERENCE = {
 "spec/vectors/invalid/broken-evidence-hash.why": {
 "norm": "5409ed9447439c5b693ae3b45247d28b8bde2c75d81607edaa9b7b6d411e365c",
 "raw": "5409ed9447439c5b693ae3b45247d28b8bde2c75d81607edaa9b7b6d411e365c"
+},
+"spec/vectors/invalid/byte-order-mark.ccert": {
+"norm": "3ba64a31918cbb36ebbef1bf27cd68dd850a2d56feaf565e49675711ae0c4920",
+"raw": "3ba64a31918cbb36ebbef1bf27cd68dd850a2d56feaf565e49675711ae0c4920"
+},
+"spec/vectors/invalid/byte-order-mark.expect": {
+"norm": "18babcb8a6ceadbc71560c4a18758d446781d0c44c53a8fb21917146b4217908",
+"raw": "18babcb8a6ceadbc71560c4a18758d446781d0c44c53a8fb21917146b4217908"
+},
+"spec/vectors/invalid/byte-order-mark.why": {
+"norm": "c3070f07549d0ca6ee9904dffdfc0e0a9a690c0d7094e69eafbecd503dffb482",
+"raw": "c3070f07549d0ca6ee9904dffdfc0e0a9a690c0d7094e69eafbecd503dffb482"
 },
 "spec/vectors/invalid/candidate-source.ccert": {
 "norm": "277f511580c8e5ffcb69dd1d98a2b26f97d76879787c31e9bf8ae11684dab3aa",
@@ -425,6 +437,30 @@ REFERENCE = {
 "norm": "f8365838444ac1e16b36ce4b92ee875faee7ffc25b2360b24d7a397ed136c6f0",
 "raw": "f8365838444ac1e16b36ce4b92ee875faee7ffc25b2360b24d7a397ed136c6f0"
 },
+"spec/vectors/invalid/empty-key.ccert": {
+"norm": "58a874cf67849f36da770b3c01ef2c20f8555b94c72f6863cee2bf9cd491c6f4",
+"raw": "58a874cf67849f36da770b3c01ef2c20f8555b94c72f6863cee2bf9cd491c6f4"
+},
+"spec/vectors/invalid/empty-key.expect": {
+"norm": "b8b149e070d7d3c303d3606b90024bb75f71d8d76ff8be315cc58dc0e266288c",
+"raw": "b8b149e070d7d3c303d3606b90024bb75f71d8d76ff8be315cc58dc0e266288c"
+},
+"spec/vectors/invalid/empty-key.why": {
+"norm": "f3172a3c0e50bccd466dfe5e0f6aa1459ee65d15ed5413680a737cd0adb3b18a",
+"raw": "f3172a3c0e50bccd466dfe5e0f6aa1459ee65d15ed5413680a737cd0adb3b18a"
+},
+"spec/vectors/invalid/escaped-solidus.ccert": {
+"norm": "eef59c99428dddd09eab684b636e540a8a1adaf35a292eb75cfb34f677758683",
+"raw": "eef59c99428dddd09eab684b636e540a8a1adaf35a292eb75cfb34f677758683"
+},
+"spec/vectors/invalid/escaped-solidus.expect": {
+"norm": "6f45732e747c3082bc666646e4b0cf46594be54f866815c576403a8c93e50851",
+"raw": "6f45732e747c3082bc666646e4b0cf46594be54f866815c576403a8c93e50851"
+},
+"spec/vectors/invalid/escaped-solidus.why": {
+"norm": "ea7bad0ca42f2a1f2cb1f9d56d269d28cd97f50fa515db0da4db7c114712b0d5",
+"raw": "ea7bad0ca42f2a1f2cb1f9d56d269d28cd97f50fa515db0da4db7c114712b0d5"
+},
 "spec/vectors/invalid/evidence-with-an-unread-field.ccert": {
 "norm": "9f47cf2a15d6e1bb108317f48cc2c3738c985b8ffae4a291216e364cc772e7d4",
 "raw": "9f47cf2a15d6e1bb108317f48cc2c3738c985b8ffae4a291216e364cc772e7d4"
@@ -448,6 +484,18 @@ REFERENCE = {
 "spec/vectors/invalid/factor-entry-with-an-unread-field.why": {
 "norm": "e514bf91385f7905ee1c8561a830ab991a1f0758add78d606039e4a81b1a9353",
 "raw": "e514bf91385f7905ee1c8561a830ab991a1f0758add78d606039e4a81b1a9353"
+},
+"spec/vectors/invalid/forbidden-key-byte.ccert": {
+"norm": "92b890a365d901b21a7886ddd41a21877190960ffb4471217cf1ebcbe13ea77a",
+"raw": "92b890a365d901b21a7886ddd41a21877190960ffb4471217cf1ebcbe13ea77a"
+},
+"spec/vectors/invalid/forbidden-key-byte.expect": {
+"norm": "4e278a2c981362a4869f7835718e006008ad5918f78a34d69b45dbceff099ffe",
+"raw": "4e278a2c981362a4869f7835718e006008ad5918f78a34d69b45dbceff099ffe"
+},
+"spec/vectors/invalid/forbidden-key-byte.why": {
+"norm": "bb0982f1e8a04381a1c4b1f05da31639ff55aefa8c2c6f53f04f19974eac8473",
+"raw": "bb0982f1e8a04381a1c4b1f05da31639ff55aefa8c2c6f53f04f19974eac8473"
 },
 "spec/vectors/invalid/foreign-curve.ccert": {
 "norm": "83b638d522c4cfaed9b3e71a948167ec4a2113e294a4b6d9f914e8ae887e0984",
@@ -473,6 +521,18 @@ REFERENCE = {
 "norm": "09564e7f8732630862eda77f01abeeeb99ee5ae425776b942a521687dc5abdf8",
 "raw": "09564e7f8732630862eda77f01abeeeb99ee5ae425776b942a521687dc5abdf8"
 },
+"spec/vectors/invalid/json-number.ccert": {
+"norm": "91ba6c13d824d0f3d38b92ab6318441456a0d60af602421cdb3f1942e5a1f1ab",
+"raw": "91ba6c13d824d0f3d38b92ab6318441456a0d60af602421cdb3f1942e5a1f1ab"
+},
+"spec/vectors/invalid/json-number.expect": {
+"norm": "a136183010d3abd430b7b3c9a4ef6fdb9a21b0c03dd8d2817c1c12b56a567580",
+"raw": "a136183010d3abd430b7b3c9a4ef6fdb9a21b0c03dd8d2817c1c12b56a567580"
+},
+"spec/vectors/invalid/json-number.why": {
+"norm": "db4da29288313bdbc8c82d9c7bd3b376f2ccd14cc5ff95b6418c456127ac2273",
+"raw": "db4da29288313bdbc8c82d9c7bd3b376f2ccd14cc5ff95b6418c456127ac2273"
+},
 "spec/vectors/invalid/mismatched-cofactor.ccert": {
 "norm": "620634058985d5d6c17f7076c488ac7805e7f456cf2a5de6c3e403000bbde60a",
 "raw": "620634058985d5d6c17f7076c488ac7805e7f456cf2a5de6c3e403000bbde60a"
@@ -484,6 +544,18 @@ REFERENCE = {
 "spec/vectors/invalid/mismatched-cofactor.why": {
 "norm": "ba6271cff41b99e49a1747caa4aa9e0b628bdea8d6b67e60806a19f7a895e577",
 "raw": "ba6271cff41b99e49a1747caa4aa9e0b628bdea8d6b67e60806a19f7a895e577"
+},
+"spec/vectors/invalid/non-minimal-unicode-escape.ccert": {
+"norm": "6ec8877ed75194beee433bb7c7a194a0556c6968ba6ef44df00292d0aae8e436",
+"raw": "6ec8877ed75194beee433bb7c7a194a0556c6968ba6ef44df00292d0aae8e436"
+},
+"spec/vectors/invalid/non-minimal-unicode-escape.expect": {
+"norm": "22205c9c2034175931695b1702010f2939a6650a365061f34f3f532a311bdb2e",
+"raw": "22205c9c2034175931695b1702010f2939a6650a365061f34f3f532a311bdb2e"
+},
+"spec/vectors/invalid/non-minimal-unicode-escape.why": {
+"norm": "dde51a380d6b248dad3faf2292d647ce2fdba55a89f3c9c438fb81c6411f63b4",
+"raw": "dde51a380d6b248dad3faf2292d647ce2fdba55a89f3c9c438fb81c6411f63b4"
 },
 "spec/vectors/invalid/order-unique-composite-n.ccert": {
 "norm": "aedeb88867f1ed12887bba4b0cb38e1f58afc4ed764aec446b8a39978780ee41",
@@ -520,6 +592,18 @@ REFERENCE = {
 "spec/vectors/invalid/overstated-two-adicity.why": {
 "norm": "c88ab2eaf4dda52ad1c9cab44d51918e9e8c6716a6d1c0ca0949bbfab8e14327",
 "raw": "c88ab2eaf4dda52ad1c9cab44d51918e9e8c6716a6d1c0ca0949bbfab8e14327"
+},
+"spec/vectors/invalid/raw-control-byte.ccert": {
+"norm": "99f7ba1f897a65781f708b2158bd301053238e119386a76d3743a60d90e8475d",
+"raw": "99f7ba1f897a65781f708b2158bd301053238e119386a76d3743a60d90e8475d"
+},
+"spec/vectors/invalid/raw-control-byte.expect": {
+"norm": "b197a82ce5de76830a004cfa24cbce71f8b8958d69a525a290247d6d12f91d7a",
+"raw": "b197a82ce5de76830a004cfa24cbce71f8b8958d69a525a290247d6d12f91d7a"
+},
+"spec/vectors/invalid/raw-control-byte.why": {
+"norm": "cb55982c84f6e786ed42f1c0279dd5b3b51532dab0b34ebbf0d3ab38bc89bb95",
+"raw": "cb55982c84f6e786ed42f1c0279dd5b3b51532dab0b34ebbf0d3ab38bc89bb95"
 },
 "spec/vectors/invalid/reordered-keys.ccert": {
 "norm": "f6e36960b4ffc01fdf08d0cfb49da0a82f1229c1f186fe1a4c7bb6c2dcda4894",
@@ -652,6 +736,18 @@ REFERENCE = {
 "spec/vectors/invalid/unfactored-cofactor-with-a-claim.why": {
 "norm": "7b28d1264168a86d2a8390390a9d6ed449c9312d76bb77402054f1bfa5489637",
 "raw": "7b28d1264168a86d2a8390390a9d6ed449c9312d76bb77402054f1bfa5489637"
+},
+"spec/vectors/invalid/unknown-escape.ccert": {
+"norm": "6462fb82bd7db469313fc3a5749e339273473eea08176e99ac307e1a3082a4c7",
+"raw": "6462fb82bd7db469313fc3a5749e339273473eea08176e99ac307e1a3082a4c7"
+},
+"spec/vectors/invalid/unknown-escape.expect": {
+"norm": "52c30870ddafa36891abf873050ea3cb3205dd4f92907a09390fb48789120ddf",
+"raw": "52c30870ddafa36891abf873050ea3cb3205dd4f92907a09390fb48789120ddf"
+},
+"spec/vectors/invalid/unknown-escape.why": {
+"norm": "15b2ec20fecd53f847f1601fed64fc4aab7704fdc3fe1c41cd411614895c6399",
+"raw": "15b2ec20fecd53f847f1601fed64fc4aab7704fdc3fe1c41cd411614895c6399"
 },
 "spec/vectors/invalid/unknown-family.ccert": {
 "norm": "c5b382318ec50e80f10b1620bb6c137c0c04d7c07022b3a2be167fe96512aa9f",
@@ -1026,8 +1122,8 @@ REFERENCE = {
 "raw": "f77d7e7350acf15e7f7ee56372ddba38b7199d0451b4ec3a10e905e66ffcbfd3"
 },
 "tools/make_invalid_vectors.py": {
-"norm": "c27200aabc19b26eb32365eed96019587879e55d84d2ef40b895c578bb4567ac",
-"raw": "c27200aabc19b26eb32365eed96019587879e55d84d2ef40b895c578bb4567ac"
+"norm": "b9e1702225d9bae55c453c69e9ce173795524387d1e5de919cf5ce92f2ba2199",
+"raw": "b9e1702225d9bae55c453c69e9ce173795524387d1e5de919cf5ce92f2ba2199"
 },
 "tools/make_release.py": {
 "norm": "8216eb8ae35c5297cdb171e0ed9d6c10814f97b874164156630c43e90b2b3987",

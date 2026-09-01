@@ -137,24 +137,27 @@ unchecked at runtime.
 
 | Rule | Refusal substring | Vector |
 |------|-------------------|--------|
-| No byte-order mark | `byte order mark is not allowed` | — |
+| No byte-order mark | `byte order mark is not allowed` | `byte-order-mark` |
 | One trailing newline, nothing after | `trailing bytes after the document` | `trailing-bytes` |
 | No whitespace (value position) | `whitespace at offset` | `whitespace` |
 | No whitespace (key position) | ``expected `"`` | — |
 | Only the six types | `unexpected byte` | — |
-| No JSON numbers | `numbers are not allowed in canonical form` | — |
-| Only necessary escapes | `unknown escape` | — |
-| No `\/` | ``\/` is not minimal escaping`` | — |
-| No non-minimal `\u` | `non-minimal escape \u` | — |
-| No raw control bytes | `raw control byte at offset` | — |
-| Key character set | `uses a byte outside [A-Za-z0-9._:-]` | — |
-| No empty key | `empty object key at offset` | — |
+| No JSON numbers | `numbers are not allowed in canonical form` | `json-number` |
+| Only necessary escapes | `unknown escape` | `unknown-escape` |
+| No `\/` | ``\/` is not minimal escaping`` | `escaped-solidus` |
+| No non-minimal `\u` | `non-minimal escape \u` | `non-minimal-unicode-escape` |
+| No raw control bytes | `raw control byte at offset` | `raw-control-byte` |
+| Key character set | `uses a byte outside [A-Za-z0-9._:-]` | `forbidden-key-byte` |
+| No empty key | `empty object key at offset` | `empty-key` |
 | Keys sorted and unique | `keys out of order or repeated at offset` | `reordered-keys` |
 | Closed keys at every level | `unknown field` | `claim-`, `subject-`, `evidence-`, `asserts-`, `chain-step-`, `factor-entry-`, `witness-point-with-an-unread-field` |
 | Evidence keyed by its own digest | `evidence does not hash to its key` | `broken-evidence-hash` |
 
-The gaps — BOM, whitespace in key position, the type restriction, JSON
-numbers, the escaping rules, the key character set, and the empty key —
-are grammar rules with no dedicated vector yet. Closing them is a corpus
-task: one crafted `.ccert` per rule, each with the substring above, added
-the way every other negative vector was.
+Two rows still carry a dash. Whitespace in key position is the same rule
+as whitespace in value position, which `whitespace` already pins from the
+other side; the distinct message is a reader-internal detail, not a
+separate rule to certify. The type restriction (`unexpected byte`) is a
+catch-all the number, escape and control-byte vectors already exercise
+in every concrete form a bundle can take. Every other rule above ships a
+vector that breaks it and no other, each carrying the substring in its
+row.
