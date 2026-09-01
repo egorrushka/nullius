@@ -261,6 +261,10 @@ REFERENCE = {
 "norm": "ef1989b8f9e9d3b23a4d40b8748a5382e7faf112f2192c58312cfb00cb4c5dc4",
 "raw": "ef1989b8f9e9d3b23a4d40b8748a5382e7faf112f2192c58312cfb00cb4c5dc4"
 },
+"spec/canonical-encoding.md": {
+"norm": "51be26d64ca49ab329c6d1d042320efd1778f54ada710a73fd5679fe6db08e3b",
+"raw": "51be26d64ca49ab329c6d1d042320efd1778f54ada710a73fd5679fe6db08e3b"
+},
 "spec/ccert-v0.md": {
 "norm": "d02705659a18f6fcc87e2e5b1a6f23bd90a8ab9e182ad688ee3a99947dc9ffb3",
 "raw": "d02705659a18f6fcc87e2e5b1a6f23bd90a8ab9e182ad688ee3a99947dc9ffb3"
