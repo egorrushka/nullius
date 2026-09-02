@@ -70,8 +70,8 @@ REFERENCE = {
 "raw": "a570454d535ae6b84edae2827beeec62611d86bfec271680a2c13cd00faef367"
 },
 ".github/workflows/ci.yml": {
-"norm": "fe3b65fc37661d0e61e66ddd5f9371fa2226a22894703de18a0be1e828c672cc",
-"raw": "fe3b65fc37661d0e61e66ddd5f9371fa2226a22894703de18a0be1e828c672cc"
+"norm": "73b551abe067c61625054c5f6c09548c66df63b4a217d0c7e341793c2ea1a529",
+"raw": "73b551abe067c61625054c5f6c09548c66df63b4a217d0c7e341793c2ea1a529"
 },
 ".github/workflows/fuzz.yml": {
 "norm": "c52c44593b5b53b2893e43a1dc14c8c963f668bfb1da302237282be6baa727e6",
