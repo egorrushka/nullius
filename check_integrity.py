@@ -94,8 +94,8 @@ REFERENCE = {
 "raw": "f171ccd50ebca368f59f2e6d775b23722ffe9da6926de6dd6ae61c13407585da"
 },
 "README.md": {
-"norm": "31d60a054054d05195dbdc0d1b870e98237d769cdc1ade83ddadcc18a6b4f63c",
-"raw": "31d60a054054d05195dbdc0d1b870e98237d769cdc1ade83ddadcc18a6b4f63c"
+"norm": "5b97f1f2f6a67a551d4fbf4b1f04b156db5919731484b4c71dc7bf2f7655a613",
+"raw": "5b97f1f2f6a67a551d4fbf4b1f04b156db5919731484b4c71dc7bf2f7655a613"
 },
 "core/__init__.py": {
 "norm": "e944dbd668ec43459f2b5f32b948d3dfae9836aa18208480e85e84bc17cb70ff",

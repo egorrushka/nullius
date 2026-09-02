@@ -25,8 +25,9 @@
 "prime order", "large discriminant", "parameters from a seed" — into a
 certificate that anyone can re-check, instead of a table you have to take
 on faith. Each claim travels with the evidence for it, and a small
-independent verifier re-establishes every claim from the file alone, in a
-fraction of a second, on a machine that did none of the original work.
+independent verifier re-establishes every claim from the file alone, in
+well under a second for a prime-field curve and seconds for a
+pairing-friendly one, on a machine that did none of the original work.
 
 **Who it is for.** People who decide which curves go into real systems and
 would rather verify than trust: cryptographers presenting a curve,
@@ -56,8 +57,10 @@ tell from the table itself.
 Nullius produces certificates instead. Every claim carries the evidence
 for it, and a small separate program re-establishes each claim from the
 file alone. Producing the evidence for one curve takes point counting,
-factoring and primality proving. Checking it takes a fraction of a second,
-on a machine that did none of that work.
+factoring and primality proving. Checking it is far cheaper: well under a
+second for a prime-field curve, a few seconds for a pairing-friendly one
+over an extension field — orders of magnitude below the minutes its
+construction took, on a machine that did none of that work.
 
 ```
 $ ccert-verify corpus/secp256k1.ccert
