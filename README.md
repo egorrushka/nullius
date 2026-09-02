@@ -171,7 +171,7 @@ tools\test.bat               run the suite
 
 | Path | What lives there |
 |------|------------------|
-| `spec/` | The bundle format, and the test vectors that pin it |
+| `spec/` | The bundle format, its [canonical encoding](spec/canonical-encoding.md), and the test vectors that pin them |
 | `verifier/` | The independent verifier, in Rust |
 | `core/` | The evidence producer, in Python over PARI/GP |
 | `core/policy/` | The policy engine and the shipped policies |
