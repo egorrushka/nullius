@@ -23,7 +23,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: dtolnay/rust-toolchain@stable
+      - uses: dtolnay/rust-toolchain@master
+        with:
+          toolchain: "1.95.0"
       - name: oracle over the corpus
         working-directory: verifier
         run: cargo test --release --test fuzz_oracle
@@ -34,7 +36,14 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: dtolnay/rust-toolchain@nightly
+      # libFuzzer needs nightly. The action is pinned; the nightly
+      # itself floats, because fuzzing hunts crashes rather than
+      # building a reproducible artifact. Pin a dated nightly here
+      # (toolchain: "nightly-YYYY-MM-DD") when reproducible fuzzing
+      # is wanted.
+      - uses: dtolnay/rust-toolchain@master
+        with:
+          toolchain: nightly
       - name: install cargo-fuzz
         run: cargo install cargo-fuzz --locked
       - name: seed the corpus from the shipped vectors

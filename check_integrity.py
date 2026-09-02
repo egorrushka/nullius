@@ -74,8 +74,8 @@ REFERENCE = {
 "raw": "73b551abe067c61625054c5f6c09548c66df63b4a217d0c7e341793c2ea1a529"
 },
 ".github/workflows/fuzz.yml": {
-"norm": "c52c44593b5b53b2893e43a1dc14c8c963f668bfb1da302237282be6baa727e6",
-"raw": "c52c44593b5b53b2893e43a1dc14c8c963f668bfb1da302237282be6baa727e6"
+"norm": "fd1d99957d1a9c1351d81d9f32c7d3567f3220c7c29fc30c7c316eab2806b27a",
+"raw": "fd1d99957d1a9c1351d81d9f32c7d3567f3220c7c29fc30c7c316eab2806b27a"
 },
 ".gitignore": {
 "norm": "a6eb33b6ddb1bef5f7f54bd5692c2eece9958f512a69b6cdb078ffcd82ebc617",
