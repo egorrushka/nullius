@@ -60,6 +60,7 @@ python -m tools.make_invalid_vectors --check
 | `twist-class-disagrees-with-evidence` | bls12-381 | the evidence proves |
 | `undeclared-dependency` | bn254 | must declare |
 | `undersized-witness` | curve25519 | multiples |
+| `unexpected-byte` | secp256k1 | unexpected byte |
 | `unfactored-cofactor-with-a-claim` | bls24-315 | no factorisation |
 | `unknown-escape` | secp256k1 | unknown escape |
 | `unknown-family` | bn254 | unknown family |
@@ -68,6 +69,7 @@ python -m tools.make_invalid_vectors --check
 | `unreduced-coordinate` | bn254 | not reduced |
 | `unsupported-twist-factor` | secp256k1 | largest prime factor |
 | `whitespace` | secp256k1 | offset |
+| `whitespace-in-key` | secp256k1 | expected `" |
 | `witness-point-with-an-unread-field` | bls12-381 | unknown field `z` |
 | `wrong-cm-trace` | bls12-381 | trace |
 | `wrong-degree` | bls12-381 | degree |
@@ -268,6 +270,10 @@ A witness whose exact order leaves several candidates in the window.
 
 Everything here is true: the point is on the curve, its order is exactly what the payload says, and the factorisation is complete and proved. The witness is simply too small to single out one multiple, and a verifier that picked the nearest admissible one would produce output indistinguishable from a proof.  Note that this cannot be faked by shrinking the stated order and leaving the point alone — that is a different defect, caught earlier by the check that the order annihilates the witness. The point has to be moved into a small subgroup.  Built over the base field: the G2 order is settled by elimination now, which has no witness to undersize.
 
+### `unexpected-byte`
+
+A bare token where a value is expected, which is not one of the six types.
+
 ### `unfactored-cofactor-with-a-claim`
 
 A largest prime factor asserted where nothing was factored.
@@ -311,6 +317,10 @@ A twist-security policy reads this number, so an assertion nothing establishes i
 ### `whitespace`
 
 Valid JSON, non-canonical bytes: one space after a separator.
+
+### `whitespace-in-key`
+
+A space where an object key is expected, refused before any key is read.
 
 ### `witness-point-with-an-unread-field`
 

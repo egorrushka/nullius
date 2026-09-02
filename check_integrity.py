@@ -238,8 +238,8 @@ REFERENCE = {
 "raw": "f180e3bdac998fc2ec85ff6b23c37597c9be3322bb71bbe6022d272807b767b2"
 },
 "docs/ROADMAP.md": {
-"norm": "2398745db9958d0433b627599f4852e33370414a665f4199beed94814c768d00",
-"raw": "2398745db9958d0433b627599f4852e33370414a665f4199beed94814c768d00"
+"norm": "15dfe6f87e026f306bbb69cb98f6e678890121dcd5159f5563e00d9c91be4c89",
+"raw": "15dfe6f87e026f306bbb69cb98f6e678890121dcd5159f5563e00d9c91be4c89"
 },
 "docs/dossier.png": {
 "norm": "16272d5b190d8481854afbc61d330ca2046c3d7a8179e0d15554f36175b83853",
@@ -262,8 +262,8 @@ REFERENCE = {
 "raw": "ef1989b8f9e9d3b23a4d40b8748a5382e7faf112f2192c58312cfb00cb4c5dc4"
 },
 "spec/canonical-encoding.md": {
-"norm": "9516387c64581d1893db919c4d6ad25e56fdc0265195d91b4c28a27d44926eb8",
-"raw": "9516387c64581d1893db919c4d6ad25e56fdc0265195d91b4c28a27d44926eb8"
+"norm": "30aa8a7d91c6c043aac7bab7c145d864347a1fe1662c92446413e6807acf4726",
+"raw": "30aa8a7d91c6c043aac7bab7c145d864347a1fe1662c92446413e6807acf4726"
 },
 "spec/ccert-v0.md": {
 "norm": "cc2f2c87955c76bfd5306f522230dbfc86b9aee1473c2ca9556f91e97f168c2f",
@@ -278,8 +278,8 @@ REFERENCE = {
 "raw": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
 },
 "spec/vectors/invalid/README.md": {
-"norm": "f454929a5bbb048199539c7c4fb946f1464e430c34deee99919f80aa960b3d92",
-"raw": "f454929a5bbb048199539c7c4fb946f1464e430c34deee99919f80aa960b3d92"
+"norm": "da7385f77b45d4a933a6aaa334329e0bcd67fd3139dabd332ce8f60e2de0df33",
+"raw": "da7385f77b45d4a933a6aaa334329e0bcd67fd3139dabd332ce8f60e2de0df33"
 },
 "spec/vectors/invalid/asserts-with-an-unread-field.ccert": {
 "norm": "a236cec76a52058d7ee3fc954cca1ec4bf620e7cba6806979bea67212ad34b81",
@@ -725,6 +725,18 @@ REFERENCE = {
 "norm": "a091a4957de8bf8f80d55fec27285441a01967243a8c482a5b44fded89b27e64",
 "raw": "a091a4957de8bf8f80d55fec27285441a01967243a8c482a5b44fded89b27e64"
 },
+"spec/vectors/invalid/unexpected-byte.ccert": {
+"norm": "4a60025ed58eceba483a89d53b60f4dbfd53df4e44b6e3b6769820a41ed0514d",
+"raw": "4a60025ed58eceba483a89d53b60f4dbfd53df4e44b6e3b6769820a41ed0514d"
+},
+"spec/vectors/invalid/unexpected-byte.expect": {
+"norm": "699a139e3958f54aab931c00ac785310b2399af2c47daee90b005f536efb6fa0",
+"raw": "699a139e3958f54aab931c00ac785310b2399af2c47daee90b005f536efb6fa0"
+},
+"spec/vectors/invalid/unexpected-byte.why": {
+"norm": "00fed3cbf7bb625dbbe3126b0557e52653bbeadb41e3cde6a75c6784ba1c01d9",
+"raw": "00fed3cbf7bb625dbbe3126b0557e52653bbeadb41e3cde6a75c6784ba1c01d9"
+},
 "spec/vectors/invalid/unfactored-cofactor-with-a-claim.ccert": {
 "norm": "4fc185ac4ef586f13f24fa21351230c698f998f780b3c4cb70993032347da8b6",
 "raw": "4fc185ac4ef586f13f24fa21351230c698f998f780b3c4cb70993032347da8b6"
@@ -808,6 +820,18 @@ REFERENCE = {
 "spec/vectors/invalid/unsupported-twist-factor.why": {
 "norm": "7e76a4d84bb7c446b4b10582424153f0ec7927297031881a18761deeacca7482",
 "raw": "7e76a4d84bb7c446b4b10582424153f0ec7927297031881a18761deeacca7482"
+},
+"spec/vectors/invalid/whitespace-in-key.ccert": {
+"norm": "fd3138cb44d7be9893bf257d5eaf23aa0040a2ffc783e6e43f6c3f0e13eae478",
+"raw": "fd3138cb44d7be9893bf257d5eaf23aa0040a2ffc783e6e43f6c3f0e13eae478"
+},
+"spec/vectors/invalid/whitespace-in-key.expect": {
+"norm": "8e59a7b87e519ffa66aae938055e868f9834e793594391e696d1194f4e473d6a",
+"raw": "8e59a7b87e519ffa66aae938055e868f9834e793594391e696d1194f4e473d6a"
+},
+"spec/vectors/invalid/whitespace-in-key.why": {
+"norm": "03b8546942a831f465627af32d1c9663e11c122cee9953ad7d3bddcbdfb03795",
+"raw": "03b8546942a831f465627af32d1c9663e11c122cee9953ad7d3bddcbdfb03795"
 },
 "spec/vectors/invalid/whitespace.ccert": {
 "norm": "a9ce1de0e8666d4e39dd075a6e6de1acb388e955418ff10b5ea507a0ba4af936",
@@ -1126,8 +1150,8 @@ REFERENCE = {
 "raw": "f77d7e7350acf15e7f7ee56372ddba38b7199d0451b4ec3a10e905e66ffcbfd3"
 },
 "tools/make_invalid_vectors.py": {
-"norm": "b9e1702225d9bae55c453c69e9ce173795524387d1e5de919cf5ce92f2ba2199",
-"raw": "b9e1702225d9bae55c453c69e9ce173795524387d1e5de919cf5ce92f2ba2199"
+"norm": "ff7fb35b25622349155c3f97ba3a48d42051a6c5780b580611293d6cdd890bbb",
+"raw": "ff7fb35b25622349155c3f97ba3a48d42051a6c5780b580611293d6cdd890bbb"
 },
 "tools/make_release.py": {
 "norm": "8216eb8ae35c5297cdb171e0ed9d6c10814f97b874164156630c43e90b2b3987",

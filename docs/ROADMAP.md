@@ -5,7 +5,7 @@ intended. A phase is done only when something a reader can run
 demonstrates it.
 
 - **Phase 0 — done.** Format drafted, verifier covers fifteen evidence
-  kinds, and the negative corpus stands at 53 vectors the verifier must
+  kinds, and the negative corpus stands at 55 vectors the verifier must
   reject, each checked to be refused for the reason it claims.
 - **Phase 1 — done.** Full tier-A dossiers exist for eight curves, and the
   accepted values for secp256k1, P-256 and Curve25519 reproduce.

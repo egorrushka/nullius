@@ -781,6 +781,19 @@ def unknown_escape(raw: bytes) -> bytes:
     return raw.replace(b'"proved"', b'"pro\\qved"', 1)
 
 
+
+def whitespace_in_key(raw: bytes) -> bytes:
+    """A space where an object key is expected, refused before any key is read."""
+    assert raw[:1] == b"{"
+    return b"{ " + raw[1:]
+
+
+def unexpected_byte(raw: bytes) -> bytes:
+    """A bare token where a value is expected, which is not one of the six types."""
+    assert b'"cofactor":"1"' in raw
+    return raw.replace(b'"cofactor":"1"', b'"cofactor":x', 1)
+
+
 MUTATIONS: dict[str, tuple[str, object, str]] = {
     # name: (source curve, mutation, expected substring of the refusal)
     "foreign-curve": ("bn254", foreign_curve, "different curve"),
@@ -894,6 +907,8 @@ MUTATIONS: dict[str, tuple[str, object, str]] = {
     "non-minimal-unicode-escape": ("secp256k1", non_minimal_unicode_escape, "non-minimal escape"),
     "raw-control-byte": ("secp256k1", raw_control_byte, "raw control byte"),
     "unknown-escape": ("secp256k1", unknown_escape, "unknown escape"),
+    "whitespace-in-key": ("secp256k1", whitespace_in_key, "expected `\""),
+    "unexpected-byte": ("secp256k1", unexpected_byte, "unexpected byte"),
 }
 
 

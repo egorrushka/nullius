@@ -140,8 +140,8 @@ unchecked at runtime.
 | No byte-order mark | `byte order mark is not allowed` | `byte-order-mark` |
 | One trailing newline, nothing after | `trailing bytes after the document` | `trailing-bytes` |
 | No whitespace (value position) | `whitespace at offset` | `whitespace` |
-| No whitespace (key position) | ``expected `"`` | — |
-| Only the six types | `unexpected byte` | — |
+| No whitespace (key position) | ``expected `"`` | `whitespace-in-key` |
+| Only the six types | `unexpected byte` | `unexpected-byte` |
 | No JSON numbers | `numbers are not allowed in canonical form` | `json-number` |
 | Only necessary escapes | `unknown escape` | `unknown-escape` |
 | No `\/` | ``\/` is not minimal escaping`` | `escaped-solidus` |
@@ -153,11 +153,5 @@ unchecked at runtime.
 | Closed keys at every level | `unknown field` | `claim-`, `subject-`, `evidence-`, `asserts-`, `chain-step-`, `factor-entry-`, `witness-point-with-an-unread-field` |
 | Evidence keyed by its own digest | `evidence does not hash to its key` | `broken-evidence-hash` |
 
-Two rows still carry a dash. Whitespace in key position is the same rule
-as whitespace in value position, which `whitespace` already pins from the
-other side; the distinct message is a reader-internal detail, not a
-separate rule to certify. The type restriction (`unexpected byte`) is a
-catch-all the number, escape and control-byte vectors already exercise
-in every concrete form a bundle can take. Every other rule above ships a
-vector that breaks it and no other, each carrying the substring in its
-row.
+Every rule above now ships a vector that breaks it and no other, each
+carrying the substring in its row — the whole grammar is pinned.
