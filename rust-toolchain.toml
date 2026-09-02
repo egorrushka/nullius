@@ -1,0 +1,15 @@
+# The verifier is the trusted base, and a trusted base a reader cannot
+# reproduce is trusted on faith. Pinning the compiler exactly — not to the
+# `stable` channel, which moves to a new release every six weeks — is the
+# first brick of a reproducible build: `cargo build` here selects this
+# toolchain on any machine, so two builds of the same commit start from
+# the same compiler rather than from whatever each machine happened to
+# have. Signing and a clean-room hash build on this; without it they pin
+# nothing.
+#
+# Bump deliberately, in its own commit, when a newer compiler is adopted —
+# never silently, because the version is part of what a rebuild reproduces.
+
+[toolchain]
+channel = "1.95.0"
+profile = "minimal"
