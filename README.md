@@ -142,6 +142,10 @@ Curves in the corpus, eight in all:
 The viewer is one HTML file with the verifier compiled to WebAssembly
 inside it. It does not display a certificate — it re-checks it, in the
 page, on the bytes in front of you, with nothing fetched and nothing sent.
+Compiled to WebAssembly it runs slower than the native binary, so a
+prime-field certificate checks in about a second and a pairing-friendly
+one takes several; the page shows the verdict when the check completes
+rather than pretending to be instant.
 When it refuses, it says so plainly and greys out every claim, so a page
 that failed one check never reads as agreement.
 
