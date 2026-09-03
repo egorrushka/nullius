@@ -1346,8 +1346,8 @@ REFERENCE = {
 "raw": "b45fa506195cfcdef406ba9f0c77b36ddc1a7c224040926ec70abc2fdea7b93a"
 },
 "web/src/App.jsx": {
-"norm": "1386a982e7ed7fd314b4fac0c2bccafad5b075422c3eef7a38cc4d4c7d2734b5",
-"raw": "1386a982e7ed7fd314b4fac0c2bccafad5b075422c3eef7a38cc4d4c7d2734b5"
+"norm": "f262be07726828951092b6a2da1b9fe1c76ea96c3a6606eed528aaf49f505b13",
+"raw": "f262be07726828951092b6a2da1b9fe1c76ea96c3a6606eed528aaf49f505b13"
 },
 "web/src/assets/hero.png": {
 "norm": "cfdde5b97f7abbdde251933fda164ea3d0d920a219bf2f8c48c1e22cbf3acfe0",
@@ -1362,8 +1362,8 @@ REFERENCE = {
 "raw": "5be21acd42eb7b896e517f4e0f0f11eb5c5d9e54fbbcebe9453f033008fcca6f"
 },
 "web/src/index.css": {
-"norm": "e8199de1c8470321703ba5cbf556c0e20ebd7f54c145416c161f12baf6e1e7f5",
-"raw": "e8199de1c8470321703ba5cbf556c0e20ebd7f54c145416c161f12baf6e1e7f5"
+"norm": "47eadfcb82029159a9fea987a071dbb82903ea52c8dfa172f40117e6104a316d",
+"raw": "47eadfcb82029159a9fea987a071dbb82903ea52c8dfa172f40117e6104a316d"
 },
 "web/src/index.html": {
 "norm": "0f7fa40e049c9e4c9fd4e864ce825e8d3866533d06a2bd5954774f496b9139ba",

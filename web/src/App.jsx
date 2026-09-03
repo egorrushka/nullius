@@ -555,6 +555,10 @@ export default function App() {
           evidence for it, and a separate program re-checks that evidence
           without redoing the work.
         </p>
+        <p className="rail-foot links">
+          <a href="https://github.com/egorrushka/nullius/blob/main/docs/security-model.md" target="_blank" rel="noreferrer">Trust model</a>
+          <a href="https://github.com/egorrushka/nullius/blob/main/spec/canonical-encoding.md" target="_blank" rel="noreferrer">Canonical encoding</a>
+        </p>
       </aside>
 
       <main className="dossier">

@@ -130,6 +130,20 @@ button, select { font: inherit; color: inherit; }
   border-top: 1px solid var(--rule);
 }
 
+.rail-foot.links {
+  display: flex;
+  gap: 0.9rem;
+  border-top: none;
+  padding-top: 0;
+  font-size: 11.5px;
+}
+.rail-foot.links a {
+  color: var(--muted);
+  text-decoration: none;
+  border-bottom: 1px solid var(--rule);
+}
+.rail-foot.links a:hover { color: var(--bright); border-bottom-color: var(--bright); }
+
 /* left rail: the corpus -------------------------------------------- */
 
 .brand h1 {
