@@ -1,6 +1,6 @@
-import { useMemo, useState } from "react";
+import { useMemo, useState, useEffect } from "react";
 import { documents, index } from "./corpus.generated.js";
-import { verify as verifyHere } from "./verifier.generated.js";
+import { verify as verifyHere, version as verifierVersion, SIZE_BYTES } from "./verifier.generated.js";
 import {
   bitLength,
   claimTier,
@@ -399,6 +399,10 @@ export default function App() {
   // machine, which is the same promise the rest of the page makes.
   const [brought, setBrought] = useState({ entries: [], documents: {} });
   const [complaint, setComplaint] = useState(null);
+  const [version, setVersion] = useState(null);
+  useEffect(() => {
+    verifierVersion().then(setVersion).catch(() => setVersion(null));
+  }, []);
 
   const listed = [...index.bundles, ...brought.entries];
   const everything = { ...documents, ...brought.documents };
@@ -555,6 +559,12 @@ export default function App() {
           evidence for it, and a separate program re-checks that evidence
           without redoing the work.
         </p>
+        {version && (
+          <p className="rail-foot stamp">
+            verifier {version} · {Math.round(SIZE_BYTES / 1024)} KB wasm — the
+            same program that ships beside the file
+          </p>
+        )}
         <p className="rail-foot links">
           <a href="https://github.com/egorrushka/nullius/blob/main/docs/security-model.md" target="_blank" rel="noreferrer">Trust model</a>
           <a href="https://github.com/egorrushka/nullius/blob/main/spec/canonical-encoding.md" target="_blank" rel="noreferrer">Canonical encoding</a>
