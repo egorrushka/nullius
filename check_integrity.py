@@ -94,8 +94,8 @@ REFERENCE = {
 "raw": "f171ccd50ebca368f59f2e6d775b23722ffe9da6926de6dd6ae61c13407585da"
 },
 "README.md": {
-"norm": "5993234c06db64efd0fdc65e585ceb1f14f8a180d9176843be66bd6a50cf8e8d",
-"raw": "5993234c06db64efd0fdc65e585ceb1f14f8a180d9176843be66bd6a50cf8e8d"
+"norm": "a6f38c934782768709d02afcd774b7b7f66e7a1dbb92cc8dfc91ae000f08a7f7",
+"raw": "a6f38c934782768709d02afcd774b7b7f66e7a1dbb92cc8dfc91ae000f08a7f7"
 },
 "core/__init__.py": {
 "norm": "e944dbd668ec43459f2b5f32b948d3dfae9836aa18208480e85e84bc17cb70ff",
@@ -1346,8 +1346,8 @@ REFERENCE = {
 "raw": "b45fa506195cfcdef406ba9f0c77b36ddc1a7c224040926ec70abc2fdea7b93a"
 },
 "web/src/App.jsx": {
-"norm": "f262be07726828951092b6a2da1b9fe1c76ea96c3a6606eed528aaf49f505b13",
-"raw": "f262be07726828951092b6a2da1b9fe1c76ea96c3a6606eed528aaf49f505b13"
+"norm": "98d05ff4079dbe4e1218f435c741c4e88f0ac7750a7591503dd15af47d9c2777",
+"raw": "98d05ff4079dbe4e1218f435c741c4e88f0ac7750a7591503dd15af47d9c2777"
 },
 "web/src/assets/hero.png": {
 "norm": "cfdde5b97f7abbdde251933fda164ea3d0d920a219bf2f8c48c1e22cbf3acfe0",
@@ -1362,8 +1362,8 @@ REFERENCE = {
 "raw": "5be21acd42eb7b896e517f4e0f0f11eb5c5d9e54fbbcebe9453f033008fcca6f"
 },
 "web/src/index.css": {
-"norm": "47eadfcb82029159a9fea987a071dbb82903ea52c8dfa172f40117e6104a316d",
-"raw": "47eadfcb82029159a9fea987a071dbb82903ea52c8dfa172f40117e6104a316d"
+"norm": "074244b34372d905aeed7e3e4722cae5b8be5f28e7f4dbb1de9236462e33c74b",
+"raw": "074244b34372d905aeed7e3e4722cae5b8be5f28e7f4dbb1de9236462e33c74b"
 },
 "web/src/index.html": {
 "norm": "0f7fa40e049c9e4c9fd4e864ce825e8d3866533d06a2bd5954774f496b9139ba",

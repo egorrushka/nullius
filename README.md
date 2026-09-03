@@ -9,7 +9,8 @@
 [![build and verify](https://github.com/egorrushka/nullius/actions/workflows/ci.yml/badge.svg)](https://github.com/egorrushka/nullius/actions/workflows/ci.yml)
 [![licence: Apache 2.0](https://img.shields.io/badge/licence-Apache%202.0-blue.svg)](LICENSE)
 [![curves certified](https://img.shields.io/badge/curves-8%20certified-6f9)](spec/vectors/valid)
-[![verifier](https://img.shields.io/badge/verifier-4559%20lines%20of%20Rust-c96)](verifier/src)
+[![verifier](https://img.shields.io/badge/verifier-4673%20lines%20of%20Rust-c96)](verifier/src)
+[![trust model](https://img.shields.io/badge/trust-model-8a63d2)](docs/security-model.md)
 
 <img src="docs/ukraine_flag.gif" width="250" alt="Ukraine">
 
