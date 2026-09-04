@@ -39,3 +39,8 @@ verifier/fuzz/corpus/
 verifier/fuzz/artifacts/
 verifier/fuzz/coverage/
 verifier/fuzz/Cargo.lock
+
+# minisign secret keys — never in the tree. The public key lives in the
+# README; the secret one stays on the signer's machine only.
+*.key
+minisign.key

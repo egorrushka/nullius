@@ -17,6 +17,8 @@ file, and that has to be the digest of the file sitting next to it.
 from __future__ import annotations
 
 import argparse
+import os
+import subprocess
 import shutil
 import sys
 import zipfile
@@ -51,6 +53,8 @@ What is in this folder
   certificates\\             The certificate files themselves.
   ccert-verify.exe          The verifier. Run it on a certificate.
   check-all.bat             Runs the verifier over every certificate here.
+  DIGESTS.txt               A SHA-256 for every file here.
+  DIGESTS.txt.minisig       Its minisign signature (see below).
 
 Checking a certificate yourself
 -------------------------------
@@ -136,6 +140,39 @@ def find_verifier() -> Path | None:
     return None
 
 
+
+def sign_digests(digests: Path) -> bool:
+    """Sign DIGESTS.txt with minisign, if a secret key is configured.
+
+    The whole release hashes down to this one file, so one signature over
+    it authenticates the lot: a reader verifies the signature, then checks
+    each file against a line it now trusts. The key is never in the tree —
+    its path comes from MINISIGN_KEY — and without it the release still
+    assembles, just unsigned, because building and signing are different
+    acts by different people at different times.
+
+    minisign prompts for the key's password on the terminal; its output is
+    left visible so the prompt is not swallowed.
+    """
+    key = os.environ.get("MINISIGN_KEY")
+    if not key:
+        print("DIGESTS.txt not signed (set MINISIGN_KEY to a minisign secret "
+              "key to sign the release)")
+        return False
+    if not Path(key).is_file():
+        print(f"MINISIGN_KEY points at {key}, which is not a file; not signed",
+              file=sys.stderr)
+        return False
+    result = subprocess.run(
+        ["minisign", "-S", "-s", key, "-m", str(digests)],
+    )
+    if result.returncode != 0:
+        print("minisign failed; DIGESTS.txt not signed", file=sys.stderr)
+        return False
+    print(f"signed {digests.name} -> {digests.name}.minisig")
+    return True
+
+
 def build(out: Path, corpus: Path, page: Path) -> int:
     if not page.is_file():
         print(f"no page at {page}; run tools\\web_build.bat first", file=sys.stderr)
@@ -190,7 +227,6 @@ def build(out: Path, corpus: Path, page: Path) -> int:
     # chmod rather than a broken program.
     shutil.copy2(verifier, out / verifier.name)
     (out / verifier.name).chmod(0o755)
-    (out / "README.txt").write_text(READ_ME, encoding="utf-8", newline="\r\n")
     (out / "check-all.bat").write_text(CHECK_ALL, encoding="utf-8", newline="\r\n")
 
     # The digest manifest covers the whole release, not only the
@@ -212,6 +248,30 @@ def build(out: Path, corpus: Path, page: Path) -> int:
     (out / "DIGESTS.txt").write_text(
         "\n".join(lines) + "\n", encoding="utf-8", newline="\r\n"
     )
+    signed = sign_digests(out / "DIGESTS.txt")
+    readme = READ_ME + ("""
+Verifying this download
+-----------------------
+
+The whole release is pinned by DIGESTS.txt: one line per file, each the
+SHA-256 of the bytes shipped. DIGESTS.txt itself is signed with minisign,
+so a tampered file — a swapped verifier, an edited certificate — cannot be
+hidden without breaking the signature.
+
+Check the signature, then the files, on Windows, macOS or Linux:
+
+    minisign -Vm DIGESTS.txt -P RWQ/j9uY50lkb6j4e0tLmPusJmmiNCY/dhWUBBu05uWgC6CBUTl0gho+
+
+A valid signature means DIGESTS.txt is the one that was released. Then
+compare any file against its line in it; on Linux or macOS:
+
+    sha256sum -c <(sed 's/^sha256://' DIGESTS.txt | tail -n +2)
+
+The public key above is this release's; it is also in the project's
+README on GitHub, so the two can be compared before it is trusted.
+""" if signed else "")
+    (out / "README.txt").write_text(readme, encoding="utf-8", newline="\r\n")
+
 
     archive = out.with_suffix(".zip")
     if archive.exists():
