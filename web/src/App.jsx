@@ -563,7 +563,6 @@ export default function App() {
           <p className="rail-foot stamp" title={STAMP || undefined}>
             verifier {version} · {Math.round(SIZE_BYTES / 1024)} KB wasm — the
             same program that ships beside the file
-            {STAMP && <> · sources {STAMP.slice(0, 12)}</>}
           </p>
         )}
         <p className="rail-foot links">
@@ -623,6 +622,15 @@ export default function App() {
             <p className="reproducible brought-note">
               Opened from your machine, and never sent anywhere. The
               verifier above ran here, in this page, on these bytes.
+            </p>
+          )}
+          {STAMP && (
+            <p
+              className="digest mono"
+              title="SHA-256 of the verifier's sources — the program that judged this"
+            >
+              <span className="digest-label">verifier</span>
+              {grouped(STAMP, 8)}
             </p>
           )}
         </header>
