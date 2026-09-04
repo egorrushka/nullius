@@ -193,12 +193,22 @@ def build(out: Path, corpus: Path, page: Path) -> int:
     (out / "README.txt").write_text(READ_ME, encoding="utf-8", newline="\r\n")
     (out / "check-all.bat").write_text(CHECK_ALL, encoding="utf-8", newline="\r\n")
 
+    # The digest manifest covers the whole release, not only the
+    # certificates. The two artefacts a reader actually runs — the page
+    # and the binary — are the ones most worth pinning: a tampered
+    # verifier could pass a forged certificate, and a reader who can hash
+    # the .exe against this line would catch a swapped one. Their bytes
+    # are hashed as they ship, whole, since neither is a canonical bundle
+    # with a trailing newline to trim.
     lines = ["digest                                                                    file"]
+    for name in ("curve-certificates.html", verifier.name):
+        digest = canonical.digest_bytes((out / name).read_bytes())
+        lines.append(f"{digest}  {name}")
     for path in certificates:
         raw = path.read_bytes()
         shutil.copyfile(path, out / "certificates" / path.name)
         digest = canonical.digest_bytes(raw.rstrip(b"\n"))
-        lines.append(f"{digest}  {path.name}")
+        lines.append(f"{digest}  certificates/{path.name}")
     (out / "DIGESTS.txt").write_text(
         "\n".join(lines) + "\n", encoding="utf-8", newline="\r\n"
     )
