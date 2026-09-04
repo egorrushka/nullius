@@ -1150,8 +1150,8 @@ REFERENCE = {
 "raw": "c01bca0ff1a91d175ab8dcd3f708f5dfae51462e741b6ebd0692bd9850d8c93d"
 },
 "tools/inline_wasm.py": {
-"norm": "5a66510874f57e536934ef13b782b23d7dca057a4783058c62b04cc838a4d04e",
-"raw": "5a66510874f57e536934ef13b782b23d7dca057a4783058c62b04cc838a4d04e"
+"norm": "8d54d1f7a49dad061af60fb097f0b9ac9ac345780beabfb2a919c1adaad4cbef",
+"raw": "8d54d1f7a49dad061af60fb097f0b9ac9ac345780beabfb2a919c1adaad4cbef"
 },
 "tools/make_cert.bat": {
 "norm": "f77d7e7350acf15e7f7ee56372ddba38b7199d0451b4ec3a10e905e66ffcbfd3",
@@ -1346,8 +1346,8 @@ REFERENCE = {
 "raw": "b45fa506195cfcdef406ba9f0c77b36ddc1a7c224040926ec70abc2fdea7b93a"
 },
 "web/src/App.jsx": {
-"norm": "98d05ff4079dbe4e1218f435c741c4e88f0ac7750a7591503dd15af47d9c2777",
-"raw": "98d05ff4079dbe4e1218f435c741c4e88f0ac7750a7591503dd15af47d9c2777"
+"norm": "090233cb5f261c47265e224fa4b134c192999665285dcb13642ce057c3766919",
+"raw": "090233cb5f261c47265e224fa4b134c192999665285dcb13642ce057c3766919"
 },
 "web/src/assets/hero.png": {
 "norm": "cfdde5b97f7abbdde251933fda164ea3d0d920a219bf2f8c48c1e22cbf3acfe0",
@@ -1378,16 +1378,16 @@ REFERENCE = {
 "raw": "5c589815ed4d0f80a962db57ce9155dd34ea9d2c12e526e392268fcdbf07a430"
 },
 "web/src/verifier.placeholder.js": {
-"norm": "efc4df5424a491ce643dba4326bc89c5efdc96bb6c29216b94791e6d02412040",
-"raw": "efc4df5424a491ce643dba4326bc89c5efdc96bb6c29216b94791e6d02412040"
+"norm": "dba37e7290542edc45c110c9762026d72289a889239e786ea7cf7b9511f162ed",
+"raw": "dba37e7290542edc45c110c9762026d72289a889239e786ea7cf7b9511f162ed"
 },
 "web/src/wasm/ccert.js": {
 "norm": "a887528c4660736edd152132b9988be55eb8b232cf2e9cad3c386cb84fd09ad6",
 "raw": "a887528c4660736edd152132b9988be55eb8b232cf2e9cad3c386cb84fd09ad6"
 },
 "web/src/wasm/ccert_bg.wasm": {
-"norm": "505c2f22536068f4bc86ffa89d2c23a4d7f407ce6609341120714cc79ec32f13",
-"raw": "5a9cfbcd7fa4d8fe0cd1e93a8fc52948f069e8b89673fa723d52a47b63ff5e42"
+"norm": "aab1c28f41450881413834f2b82839b2ee3b7cecdc4c23d7db2f8cb5bc4da4c0",
+"raw": "78ab453b82e673f90100ad5d3e9affd644385de31615fefa504d46e1a4530951"
 },
 "web/vite.config.js": {
 "norm": "2a6c49e04bb03b211ff47c6e4db951db8cdd1c64dc2d6a1400f0b8a32507c670",

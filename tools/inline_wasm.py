@@ -99,13 +99,14 @@ export async function version() {{
 }}
 
 export const SIZE_BYTES = {len(raw)};
+export const STAMP = "{stamp()}";
 '''
     # The stamp goes in first, so `make_release.py` can refuse a page
     # whose verifier predates the tree. Without it a release can ship a
     # browser module older than the certificates beside it, and the
     # symptom is a valid certificate refused in the page and accepted on
     # the command line — which reads as a broken certificate.
-    OUT.write_text(f"{PREFIX}{stamp()}\n" + body, encoding="utf-8")
+    OUT.write_text(f"{PREFIX}{stamp()}\n" + body, encoding="utf-8", newline="\n")
     print(
         f"inlined {len(raw) / 1024:.0f} KB of wasm "
         f"({len(encoded) / 1024:.0f} KB as base64) into {OUT.relative_to(ROOT)}"

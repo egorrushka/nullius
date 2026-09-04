@@ -1,6 +1,6 @@
 import { useMemo, useState, useEffect } from "react";
 import { documents, index } from "./corpus.generated.js";
-import { verify as verifyHere, version as verifierVersion, SIZE_BYTES } from "./verifier.generated.js";
+import { verify as verifyHere, version as verifierVersion, SIZE_BYTES, STAMP } from "./verifier.generated.js";
 import {
   bitLength,
   claimTier,
@@ -560,9 +560,10 @@ export default function App() {
           without redoing the work.
         </p>
         {version && (
-          <p className="rail-foot stamp">
+          <p className="rail-foot stamp" title={STAMP || undefined}>
             verifier {version} · {Math.round(SIZE_BYTES / 1024)} KB wasm — the
             same program that ships beside the file
+            {STAMP && <> · sources {STAMP.slice(0, 12)}</>}
           </p>
         )}
         <p className="rail-foot links">

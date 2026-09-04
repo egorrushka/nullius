@@ -28,3 +28,5 @@ export async function version() {
 }
 
 export const SIZE_BYTES = 0;
+
+export const STAMP = "";
