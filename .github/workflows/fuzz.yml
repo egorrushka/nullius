@@ -36,14 +36,15 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      # libFuzzer needs nightly. The action is pinned; the nightly
-      # itself floats, because fuzzing hunts crashes rather than
-      # building a reproducible artifact. Pin a dated nightly here
-      # (toolchain: "nightly-YYYY-MM-DD") when reproducible fuzzing
-      # is wanted.
+      # libFuzzer needs nightly, pinned to a dated one so a fuzzing run
+      # is reproducible: the same compiler and sanitizer find the same
+      # crashes, rather than a floating nightly changing what is tested
+      # from day to day. This date is a candidate until the first green
+      # CI run confirms it builds cargo-fuzz; bump it (and only it) if a
+      # newer cargo-fuzz ever needs a newer nightly.
       - uses: dtolnay/rust-toolchain@master
         with:
-          toolchain: nightly
+          toolchain: "nightly-2026-09-03"
       - name: install cargo-fuzz
         run: cargo install cargo-fuzz --locked
       - name: seed the corpus from the shipped vectors
