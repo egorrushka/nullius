@@ -175,6 +175,23 @@ tools\test.bat               run the suite
 
 `python tools\env_check.py` says which of those are missing.
 
+## Verifying a release
+
+Each release ships a `DIGESTS.txt` — a SHA-256 for every file in it, the
+page and the verifier included, not only the certificates — and a
+`DIGESTS.txt.minisig` signing it with [minisign](https://jedisct1.github.io/minisign/).
+One signature over the manifest covers the whole download: verify it,
+then check any file against the line you now trust.
+
+```
+minisign -Vm DIGESTS.txt -P RWQ/j9uY50lkb6j4e0tLmPusJmmiNCY/dhWUBBu05uWgC6CBUTl0gho+
+```
+
+The public key is this line, kept here so it can be compared against the
+one in a download before it is trusted. It attests only that a release
+was assembled by the holder of the key; it is not a claim about the
+mathematics, which every certificate carries its own evidence for.
+
 ## How it is put together
 
 | Path | What lives there |
