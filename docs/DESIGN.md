@@ -80,3 +80,44 @@ release event, not a bug to be patched quietly.
 The long-term answer is a deterministic chain generator of our own, which
 would remove the dependency entirely. It is expensive and not scheduled;
 noting it here so the decision is visible rather than implied.
+
+### The verifier binary
+
+The paragraphs above are about the certificates. The verifier itself is a
+compiled binary, and its reproducibility is a separate question with a
+separate answer.
+
+A release build of `ccert-verify.exe` is deterministic on Windows: two
+builds from the same sources, on the pinned toolchain (Rust 1.95.0, set in
+`rust-toolchain.toml`), produce the identical binary. Two sources of
+nondeterminism were found and pinned — `-C codegen-units=1` for a stable
+code-generation order, and the MSVC linker's `/Brepro` to zero the
+timestamp it otherwise writes into the executable. The flags are set in
+`tools/build_verifier.bat`, through the environment, deliberately: the same
+flags placed in `.cargo/config.toml` did not reproduce, because cargo
+merges a target's `rustflags` with the profile differently than a plain
+`RUSTFLAGS` does — the environment channel is the one that holds, and it is
+the channel the build script uses. Windows-only, so the Linux CI runners,
+which link differently and do not know `/Brepro`, are untouched.
+
+With those, the expected SHA-256 of the binary is:
+
+```text
+47df53615767112f09264180a32ebc649cb9b1d799f47b66169e2d1aa378a4d9
+```
+
+The honest boundary. This is reproduction *on our build*: the same
+toolchain, the same machine, the same path the tree sits at — the build
+path is compiled into the binary, so a checkout at a different location
+hashes differently even with everything else identical. It is enough to
+catch a binary that changed when nothing should have, which is what a
+release check needs. Path-independent, cross-machine reproduction — anyone
+on 1.95.0 arriving at this same hash — is a stronger claim, would need the
+build path remapped away and then confirmed across machines, and is not
+made here.
+
+Authenticity does not rest on this in any case. A downloaded release is
+pinned by its signed `DIGESTS.txt` (see the project README), which attests
+the exact bytes shipped, and the source stamp ties the browser module to
+the verifier's sources. A byte-for-byte rebuild is a check the author can
+run, not a chain of trust the reader depends on.

@@ -230,8 +230,8 @@ REFERENCE = {
 "raw": "3203531fabb87aa449a73300e41d1192ab5089de7a452307d1196208cca8af1f"
 },
 "docs/DESIGN.md": {
-"norm": "461601d9de1f6227ad2325e750e2398aa4546be7908e28b95149402a7f1eb86f",
-"raw": "461601d9de1f6227ad2325e750e2398aa4546be7908e28b95149402a7f1eb86f"
+"norm": "0fca58e01a448b2b4f2285d59ca4175bdab6b81edbc960d284a6f75e6befb001",
+"raw": "0fca58e01a448b2b4f2285d59ca4175bdab6b81edbc960d284a6f75e6befb001"
 },
 "docs/OPEN_QUESTION_high_degree_extensions.md": {
 "norm": "f180e3bdac998fc2ec85ff6b23c37597c9be3322bb71bbe6022d272807b767b2",
@@ -1114,8 +1114,8 @@ REFERENCE = {
 "raw": "fc0276f0fee1ffa0d62a913be7a69ddc0ebc974c693181d58ad277cfae3db8aa"
 },
 "tools/build_verifier.bat": {
-"norm": "71982b696314f6bd75d3e704c5401c41cc7c91d0d0cb99fcf8544009add40a9c",
-"raw": "71982b696314f6bd75d3e704c5401c41cc7c91d0d0cb99fcf8544009add40a9c"
+"norm": "e58ae1fc44421bd303fe53aaacfca2194984831fe0b934e48fc21710e79576a0",
+"raw": "54467ec562bc5b9037ec8416ad0102bdc1aaec6f70a765f8a2fdfa0cf3b79869"
 },
 "tools/build_wasm.bat": {
 "norm": "e0d2572b930a7d4ad6b3ce2c3c0150c5d46f8e0aabe68bbd32f8135d5b1f0c69",

@@ -15,6 +15,14 @@ echo Sources:
 for %%F in (src\*.rs) do echo   %%~tF  %%~zF bytes  %%~nxF
 echo.
 
+rem Deterministic release build. codegen-units=1 fixes the code-generation
+rem order; /Brepro zeroes the MSVC linker timestamp otherwise written into
+rem the PE header. Together a rebuild from the same sources yields the same
+rem bytes. Set here rather than in .cargo/config.toml because the config
+rem channel merges rustflags differently and did not reproduce; the env
+rem channel does. Windows-only, so the Linux CI build is untouched.
+set RUSTFLAGS=-C codegen-units=1 -C link-arg=/Brepro
+
 cargo build --release
 if errorlevel 1 (
     echo.
