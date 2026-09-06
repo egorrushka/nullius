@@ -17,6 +17,7 @@ file, and that has to be the digest of the file sitting next to it.
 from __future__ import annotations
 
 import argparse
+import hashlib
 import os
 import subprocess
 import shutil
@@ -216,6 +217,32 @@ def build(out: Path, corpus: Path, page: Path) -> int:
         print(f"refusing to assemble: {page_sentence}", file=sys.stderr)
         return 2
     print(f"shipped page: {page_state} — {page_sentence}")
+
+    # The binary must be the deterministic one.
+    #
+    # The release ships whatever build_verifier.bat last produced, and only
+    # a build through that script — which sets the flags that pin code
+    # generation and zero the linker timestamp — is byte-for-byte
+    # reproducible (docs/DESIGN.md, "The verifier binary"). A plain
+    # `cargo build` would ship a binary that hashes differently on every
+    # rebuild, so DIGESTS would pin bytes nobody else could reproduce.
+    #
+    # The check is opt-in, because the expected hash holds only for a build
+    # at this tree's path: set CCERT_EXPECT_HASH to that hash to have the
+    # release refuse a binary that does not match, and leave it unset to
+    # simply record whichever hash was built. The hash is printed either
+    # way, so a release master always sees what shipped.
+    binary_hash = hashlib.sha256(verifier.read_bytes()).hexdigest()
+    print(f"verifier sha256: {binary_hash}")
+    expected = os.environ.get("CCERT_EXPECT_HASH")
+    if expected and binary_hash != expected.strip().lower():
+        print(
+            f"refusing to assemble: the verifier hashes to {binary_hash}, not the\n"
+            f"  expected {expected.strip().lower()}. Build it with "
+            f"tools\\build_verifier.bat, which sets the deterministic flags.",
+            file=sys.stderr,
+        )
+        return 2
 
     if out.exists():
         shutil.rmtree(out)
