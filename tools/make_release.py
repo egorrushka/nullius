@@ -39,11 +39,14 @@ separate program re-checks that evidence without redoing the work that
 produced it. Producing the evidence took minutes. Checking it takes under a
 second, and you do not have to trust us for any of it.
 
-Four curves are covered: secp256k1 and NIST P-256 over prime fields, and
-BLS12-381 and BN254, the pairing-friendly curves underneath Ethereum's
-signatures and precompiles. The pairing curves carry claims about a second
-group living over a quadratic extension, which is where most of the
-evidence in those two files goes.
+Eight curves are covered. Four are prime-field: secp256k1 and NIST P-256,
+and the Edwards pair Curve25519 and Ed25519. Four are pairing-friendly:
+BLS12-381 and BN254, underneath Ethereum's signatures and precompiles,
+and BLS24-315 and BLS24-509. The pairing curves carry claims about a
+second group living over an extension field — degree two for BLS12 and
+BN, degree four for the BLS24 pair — which is where most of the evidence
+in those files goes, and its order is settled without factoring a
+thousand-bit cofactor.
 
 What is in this folder
 ----------------------
