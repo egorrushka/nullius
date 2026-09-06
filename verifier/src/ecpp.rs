@@ -3,8 +3,10 @@
 //! Each step reduces the primality of N to the primality of a smaller q.
 //! Given a curve E over Z/NZ, a point P on it, and integers t and s with
 //!
-//!     m = N + 1 - t,   m = s * q,   q > (N^(1/4) + 1)^2,
-//!     m * P = O,       s * P != O,
+//! ```text
+//! m = N + 1 - t,   m = s * q,   q > (N^(1/4) + 1)^2,
+//! m * P = O,       s * P != O,
+//! ```
 //!
 //! N is prime if q is. The chain repeats until q is small enough to settle
 //! directly, and the whole thing is only as good as its last step, which is
