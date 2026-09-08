@@ -121,3 +121,37 @@ pinned by its signed `DIGESTS.txt` (see the project README), which attests
 the exact bytes shipped, and the source stamp ties the browser module to
 the verifier's sources. A byte-for-byte rebuild is a check the author can
 run, not a chain of trust the reader depends on.
+
+## Where verification time goes
+
+Checking a prime-field certificate is well under a second; the pairing
+curves cost more, and BLS24-509 is the extreme — about nine and a half
+seconds. That number is worth breaking down rather than hiding, because it
+says plainly what is expensive and why it is not being chased.
+
+Measured on one run of BLS24-509:
+
+```text
+derive.order-elimination  g2.cardinality       5.1 s   ~54%
+proof.point-order         curve.cardinality    1.9 s   ~20%
+proof.ecpp                field.characteristic 1.2 s   ~12%
+proof.ecpp                curve.order.prime    0.7 s    ~7%
+derive.twist-sum          twist.cardinality    0.2 s    ~2%
+everything else                              < 2 ms    ~0%
+```
+
+More than half is the order-elimination over `F_p^4`: multiplying points
+through the tower field `fq4` builds on `fq2` builds on `fq`, and every
+one of those multiplications is affine, with a modular reduction written
+as `%` rather than Montgomery form. That is a deliberate choice the
+arithmetic modules state in their own docstrings — a verifier is read
+before it is trusted, and clarity there is worth more than speed.
+
+So the cost is understood and accepted, not unexamined. Nine seconds to
+re-check what took minutes to produce is the asymmetry working as
+intended, on a document nobody re-checks in a loop. Faster tower
+arithmetic — Montgomery reduction, fewer inversions — is possible, but it
+would rewrite the part of the trusted base a reader most needs to follow,
+to shave a wait that is already far below the build it verifies. It is not
+scheduled, and this paragraph is here so that is a decision on the record
+rather than an omission.
