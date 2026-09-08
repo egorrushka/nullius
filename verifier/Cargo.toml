@@ -1,6 +1,6 @@
 [package]
 name = "ccert-verify"
-version = "0.0.0"
+version = "0.3.0"
 edition = "2021"
 description = "Independent verifier for .ccert bundles"
 license = "Apache-2.0"

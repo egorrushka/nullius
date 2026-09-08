@@ -103,7 +103,7 @@ which link differently and do not know `/Brepro`, are untouched.
 With those, the expected SHA-256 of the binary is:
 
 ```text
-47df53615767112f09264180a32ebc649cb9b1d799f47b66169e2d1aa378a4d9
+da7a789ba5cae4a0010d6763d4dc3a28fc6387b0b086a31cccdb35bca3beda42
 ```
 
 The honest boundary. This is reproduction *on our build*: the same
