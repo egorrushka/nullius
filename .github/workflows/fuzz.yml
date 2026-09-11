@@ -56,6 +56,14 @@ jobs:
           cp ../spec/vectors/valid/*.ccert   fuzz/corpus/verify_text/ || true
           cp ../spec/vectors/invalid/*.ccert fuzz/corpus/verify_text/ || true
           cp fuzz/corpus/verify_text/*.ccert fuzz/corpus/parse/       || true
+      # The per-input timeout is 90s, not libFuzzer's usual few. The corpus
+      # is seeded with the shipped vectors, and the most expensive of them —
+      # BLS24, whose G2 order is settled by elimination over F_p^4 — verifies
+      # in about 3s in release, but the fuzz build is instrumented (ASan plus
+      # coverage) and runs several times slower, so a valid BLS24 seed alone
+      # exceeds a 25s limit. That is the sanitizer's cost on a known-good
+      # input, not a slow path worth failing on; 90s clears it with headroom
+      # while still catching an input that hangs.
       - name: set run length
         id: len
         run: |
@@ -74,7 +82,7 @@ jobs:
         run: >
           cargo fuzz run verify_text --
           -max_total_time=${{ steps.len.outputs.seconds }}
-          -max_len=65536 -rss_limit_mb=2048 -timeout=25
+          -max_len=65536 -rss_limit_mb=2048 -timeout=90
       - name: fuzz parse
         working-directory: verifier
         env:
@@ -82,7 +90,7 @@ jobs:
         run: >
           cargo fuzz run parse --
           -max_total_time=${{ steps.len.outputs.seconds }}
-          -max_len=65536 -rss_limit_mb=2048 -timeout=25
+          -max_len=65536 -rss_limit_mb=2048 -timeout=90
       - name: keep any crash for triage
         if: failure()
         uses: actions/upload-artifact@v4
