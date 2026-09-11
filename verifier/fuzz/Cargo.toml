@@ -11,6 +11,10 @@ cargo-fuzz = true
 libfuzzer-sys = "0.4"
 
 [dependencies.ccert]
+# The package is `ccert-verify`; its library is `ccert`. cargo-fuzz
+# resolves the dependency by package name, so name it here and keep the
+# `ccert` handle the fuzz targets already import.
+package = "ccert-verify"
 path = ".."
 
 # Its own workspace, so a plain `cargo build` at the project root never

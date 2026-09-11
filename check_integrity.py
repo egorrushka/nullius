@@ -1222,8 +1222,8 @@ REFERENCE = {
 "raw": "0e991f94495a82067da745b38d9aa2ddadcffab8763ad8db40998aa3cbeda5cc"
 },
 "verifier/fuzz/Cargo.toml": {
-"norm": "6da6e9beed5f5d0c3fb01b7d4c9be1b4092d9ecc9e7e2b9c9684a419313dc096",
-"raw": "6da6e9beed5f5d0c3fb01b7d4c9be1b4092d9ecc9e7e2b9c9684a419313dc096"
+"norm": "cca5a51b491261a2079682d9e34173b57b4c36cff0fa03adf9a0cf0867991913",
+"raw": "cca5a51b491261a2079682d9e34173b57b4c36cff0fa03adf9a0cf0867991913"
 },
 "verifier/fuzz/fuzz_targets/parse.rs": {
 "norm": "867d6324672df1281a192c5175d1c6274fa0f9d145c89e82f629c5315f929bad",
