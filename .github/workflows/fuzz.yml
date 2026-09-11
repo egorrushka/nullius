@@ -46,6 +46,8 @@ jobs:
         with:
           toolchain: "nightly-2026-09-03"
       - name: install cargo-fuzz
+        env:
+          RUSTUP_TOOLCHAIN: nightly-2026-09-03
         run: cargo install cargo-fuzz --locked
       - name: seed the corpus from the shipped vectors
         working-directory: verifier
@@ -64,12 +66,19 @@ jobs:
           fi
       - name: fuzz verify_text
         working-directory: verifier
+        env:
+          # rust-toolchain.toml pins stable 1.95.0 for the reproducible
+          # verifier build; cargo-fuzz needs nightly for -Z. This overrides
+          # the pin for the fuzz run only, without touching the file.
+          RUSTUP_TOOLCHAIN: nightly-2026-09-03
         run: >
           cargo fuzz run verify_text --
           -max_total_time=${{ steps.len.outputs.seconds }}
           -max_len=65536 -rss_limit_mb=2048 -timeout=25
       - name: fuzz parse
         working-directory: verifier
+        env:
+          RUSTUP_TOOLCHAIN: nightly-2026-09-03
         run: >
           cargo fuzz run parse --
           -max_total_time=${{ steps.len.outputs.seconds }}

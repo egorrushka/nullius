@@ -190,6 +190,13 @@ def test_verifier_stays_readable():
     payload, and the objects nested inside one. That is a table of payload
     shapes and a call at each reading site, and it is the kind of growth
     the budget exists to make deliberate rather than to prevent.
+
+    4600 to 4800: the fuzz oracle (`fuzz_oracle.rs`), one definition of a
+    correct verdict shared by the libFuzzer targets and the corpus test so
+    the two cannot drift; and the hardening the reviews above produced,
+    settled into place. The oracle is small and load-bearing — a rule the
+    fuzzer checks that the test does not would be a hole — so it earns its
+    lines. The headroom is for the next argued change, not for drift.
     """
     sizes = {
         path.name: len(path.read_text(encoding="utf-8").splitlines())
@@ -198,7 +205,7 @@ def test_verifier_stays_readable():
     for name, lines in sizes.items():
         assert lines < 800, f"{name} alone is {lines} lines; split it"
     total = sum(sizes.values())
-    assert total < 4600, (
+    assert total < 4800, (
         f"verifier grew to {total} lines; raise the budget with a reason "
         "or split something"
     )
